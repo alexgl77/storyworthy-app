@@ -6,7 +6,7 @@ import { useAuth } from '../hooks/useAuth'
 import { getPromptsForToday } from '../utils/prompts'
 import { calculateStreak } from '../utils/stats'
 import StarRating from '../components/StarRating'
-import { Sparkles, Calendar, TrendingUp, Sun, Moon, Save, Star } from 'lucide-react'
+import { Sparkles, Calendar, TrendingUp, Sun, Moon, Save, Star, X } from 'lucide-react'
 
 export default function Dashboard() {
   const { user } = useAuth()
@@ -23,6 +23,14 @@ export default function Dashboard() {
   const [streak, setStreak] = useState(0)
   const [showPrompts, setShowPrompts] = useState(false)
   const [prompts] = useState(getPromptsForToday())
+  const [showIntro, setShowIntro] = useState(() => {
+    return localStorage.getItem('clarity_intro_dismissed') !== 'true'
+  })
+
+  const dismissIntro = () => {
+    setShowIntro(false)
+    localStorage.setItem('clarity_intro_dismissed', 'true')
+  }
 
   const today = format(new Date(), 'yyyy-MM-dd')
   const currentHour = new Date().getHours()
@@ -118,6 +126,25 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
+      {/* Intro */}
+      {showIntro && (
+        <div className="card mb-6 relative bg-gradient-to-br from-primary-50 to-surface-50 dark:from-primary-900/20 dark:to-dark-surface border-primary-200/40 dark:border-primary-800/30">
+          <button
+            onClick={dismissIntro}
+            className="absolute top-4 right-4 p-1 rounded-lg text-warm-400 hover:text-warm-600 hover:bg-surface-200/60 dark:hover:bg-dark-elevated transition-all duration-200"
+            aria-label="Cerrar"
+          >
+            <X size={18} />
+          </button>
+          <h3 className="text-lg font-bold text-primary-700 dark:text-primary-300 mb-2">
+            Vive con intención, no en piloto automático.
+          </h3>
+          <p className="text-sm text-warm-600 dark:text-warm-400 leading-relaxed pr-6">
+            Cada día: establece una intención, captura el momento más significativo, evalúa cómo te fue y agradece. Cada semana: reflexiona sobre tus patrones.
+          </p>
+        </div>
+      )}
+
       {/* Header con estadísticas */}
       <div className="mb-8">
         <h2 className="text-3xl font-bold tracking-tight mb-2">
