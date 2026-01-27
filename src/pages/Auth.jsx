@@ -32,13 +32,13 @@ export default function Auth() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-primary-50 via-surface-50 to-primary-100 dark:from-dark-bg dark:via-dark-bg dark:to-dark-surface">
       <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-primary-600 dark:text-primary-400 mb-2">
-            StoryWorthy
+        <div className="text-center mb-10">
+          <h1 className="text-5xl font-bold tracking-tight text-primary-600 dark:text-primary-400 mb-3">
+            Clarity
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-warm-500 dark:text-warm-400 text-lg">
             Sal del piloto automático. Vive conscientemente.
           </p>
         </div>
@@ -47,20 +47,20 @@ export default function Auth() {
           <div className="flex gap-2 mb-6">
             <button
               onClick={() => setIsLogin(true)}
-              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
+              className={`flex-1 py-2.5 px-4 rounded-xl font-medium transition-all duration-200 ${
                 isLogin
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                  ? 'bg-primary-600 text-white shadow-soft'
+                  : 'bg-surface-100 dark:bg-dark-elevated text-warm-500 dark:text-warm-400 hover:bg-surface-200 dark:hover:bg-dark-border'
               }`}
             >
               Iniciar sesión
             </button>
             <button
               onClick={() => setIsLogin(false)}
-              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
+              className={`flex-1 py-2.5 px-4 rounded-xl font-medium transition-all duration-200 ${
                 !isLogin
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+                  ? 'bg-primary-600 text-white shadow-soft'
+                  : 'bg-surface-100 dark:bg-dark-elevated text-warm-500 dark:text-warm-400 hover:bg-surface-200 dark:hover:bg-dark-border'
               }`}
             >
               Crear cuenta
@@ -69,7 +69,7 @@ export default function Auth() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2">
+              <label htmlFor="email" className="block text-sm font-medium mb-2 text-warm-700 dark:text-warm-300">
                 Email
               </label>
               <input
@@ -84,7 +84,7 @@ export default function Auth() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-2">
+              <label htmlFor="password" className="block text-sm font-medium mb-2 text-warm-700 dark:text-warm-300">
                 Contraseña
               </label>
               <input
@@ -98,18 +98,18 @@ export default function Auth() {
                 required
               />
               {!isLogin && (
-                <p className="text-sm text-gray-500 mt-1">Mínimo 6 caracteres</p>
+                <p className="text-sm text-warm-400 mt-1">Mínimo 6 caracteres</p>
               )}
             </div>
 
             {error && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+              <div className="bg-coral-500/10 border border-coral-500/20 text-coral-600 dark:text-coral-400 px-4 py-3 rounded-xl text-sm">
                 {error}
               </div>
             )}
 
             {message && (
-              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-600 dark:text-green-400 px-4 py-3 rounded-lg text-sm">
+              <div className="bg-sage-500/10 border border-sage-500/20 text-sage-600 dark:text-sage-400 px-4 py-3 rounded-xl text-sm">
                 {message}
               </div>
             )}
@@ -120,7 +120,7 @@ export default function Auth() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-warm-500 dark:text-warm-400">
               {isLogin ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'}{' '}
               <button
                 onClick={() => setIsLogin(!isLogin)}
@@ -132,10 +132,9 @@ export default function Auth() {
           </div>
         </div>
 
-        <div className="mt-8 text-center text-sm text-gray-500 dark:text-gray-500">
+        <div className="mt-8 text-center text-sm text-warm-400">
           <p>
-            Basado en el concepto <strong>Homework for Life</strong> del libro{' '}
-            <em>Storyworthy</em> de Matthew Dicks
+            Inspirado en el concepto <strong className="text-warm-500">Homework for Life</strong>
           </p>
         </div>
       </div>

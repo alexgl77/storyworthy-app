@@ -1,27 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors;
+    @apply bg-surface-50 text-warm-900 transition-colors font-sans antialiased;
+  }
+
+  .dark body,
+  body.dark {
+    background-color: #1A1A2E;
+    color: #FAFAF9;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-5 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-soft hover:shadow-soft-lg active:scale-[0.98];
   }
 
   .btn-secondary {
-    @apply bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 font-medium py-2 px-4 rounded-lg transition-colors;
+    @apply bg-surface-100 hover:bg-surface-200 text-warm-800 font-medium py-2.5 px-5 rounded-xl transition-all duration-200 border border-surface-200;
+  }
+
+  .dark .btn-secondary {
+    @apply bg-dark-surface hover:bg-dark-elevated text-warm-50 border-dark-border;
   }
 
   .input-field {
-    @apply w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100;
+    @apply w-full px-4 py-3 border border-surface-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:border-primary-400 bg-white text-warm-900 transition-all duration-200 placeholder:text-warm-400;
+  }
+
+  .dark .input-field {
+    @apply bg-dark-surface border-dark-border text-warm-50 placeholder:text-warm-500;
   }
 
   .card {
-    @apply bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6;
+    @apply bg-white rounded-2xl shadow-soft border border-surface-200/60 p-6 transition-all duration-200;
+  }
+
+  .dark .card {
+    @apply bg-dark-surface border-dark-border shadow-none;
   }
 }

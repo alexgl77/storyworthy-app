@@ -120,12 +120,12 @@ export default function Dashboard() {
     <div className="max-w-3xl mx-auto px-4 py-8">
       {/* Header con estadísticas */}
       <div className="mb-8">
-        <h2 className="text-3xl font-bold mb-2">
+        <h2 className="text-3xl font-bold tracking-tight mb-2">
           {format(new Date(), "EEEE, d 'de' MMMM", { locale: es })}
         </h2>
         <div className="flex gap-4 mt-4">
           <div className="card flex-1 !p-4">
-            <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
+            <div className="flex items-center gap-2 text-coral-500 dark:text-coral-400">
               <TrendingUp size={20} />
               <span className="font-semibold">Racha</span>
             </div>
@@ -144,7 +144,7 @@ export default function Dashboard() {
       {/* Check-in matutino */}
       <div className="card mb-6">
         <div className="flex items-center gap-2 mb-4">
-          <Sun size={22} className="text-yellow-500" />
+          <Sun size={22} className="text-amber-500" />
           <h3 className="text-xl font-semibold">Intención del día</h3>
         </div>
         <input
@@ -155,17 +155,17 @@ export default function Dashboard() {
           className="input-field"
         />
         {isMorning && !morningIntention && !todayEntry?.morning_intention && (
-          <p className="text-sm text-yellow-600 dark:text-yellow-400 mt-2">
+          <p className="text-sm text-amber-600 dark:text-amber-400 mt-2">
             Establece tu intención para hoy
           </p>
         )}
       </div>
 
-      {/* Homework for Life */}
+      {/* Momento del día */}
       <div className="card mb-6">
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-2">
-            <Moon size={22} className="text-indigo-500" />
+            <Moon size={22} className="text-primary-500" />
             <h3 className="text-xl font-semibold">Momento del día</h3>
           </div>
           <button
@@ -178,7 +178,7 @@ export default function Dashboard() {
         </div>
 
         {showPrompts && (
-          <div className="mb-4 p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg border border-primary-200 dark:border-primary-800">
+          <div className="mb-4 p-4 bg-primary-50 dark:bg-primary-900/20 rounded-xl border border-primary-200/60 dark:border-primary-800/40">
             <p className="text-sm font-medium text-primary-900 dark:text-primary-100 mb-2">
               Si no sabes qué escribir, prueba con estas preguntas:
             </p>
@@ -198,7 +198,7 @@ export default function Dashboard() {
         />
 
         <div className="flex justify-between items-center mt-3">
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-warm-400">
             {wordCount} {wordCount === 1 ? 'palabra' : 'palabras'}
           </span>
         </div>
@@ -219,10 +219,10 @@ export default function Dashboard() {
       {/* Gratitud */}
       <div className="card mb-6">
         <div className="flex items-center gap-2 mb-4">
-          <Heart size={22} className="text-rose-500" />
+          <Heart size={22} className="text-coral-500" />
           <h3 className="text-xl font-semibold">Agradecimiento</h3>
         </div>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+        <p className="text-sm text-warm-400 mb-4">
           3 cosas por las que estás agradecido hoy
         </p>
         <div className="space-y-3">
@@ -264,10 +264,10 @@ export default function Dashboard() {
         <button
           onClick={handleSave}
           disabled={loading || !hasAnyContent}
-          className={`w-full py-3 px-6 rounded-xl font-semibold text-white shadow-lg transition-all flex items-center justify-center gap-2 ${
+          className={`w-full py-3.5 px-6 rounded-2xl font-semibold text-white shadow-soft-lg transition-all duration-200 flex items-center justify-center gap-2 ${
             saved
-              ? 'bg-green-600'
-              : 'bg-primary-600 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed'
+              ? 'bg-sage-500'
+              : 'bg-primary-600 hover:bg-primary-700 hover:shadow-soft-xl active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed'
           }`}
         >
           <Save size={20} />
@@ -276,7 +276,7 @@ export default function Dashboard() {
       </div>
 
       {todayEntry && (
-        <p className="text-xs text-center text-gray-500 mt-2">
+        <p className="text-xs text-center text-warm-400 mt-2">
           Última actualización: {format(new Date(todayEntry.updated_at), "HH:mm")}
         </p>
       )}
@@ -291,7 +291,7 @@ export default function Dashboard() {
               return (
                 <div key={entry.id} className="card !p-4">
                   <div className="flex justify-between items-center mb-2">
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    <p className="text-sm font-medium text-warm-500 dark:text-warm-400">
                       {format(new Date(entry.entry_date), "EEEE, d 'de' MMMM", { locale: es })}
                     </p>
                     {entry.mood_rating > 0 && (
@@ -300,13 +300,13 @@ export default function Dashboard() {
                           <Star
                             key={s}
                             size={14}
-                            className={s <= entry.mood_rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
+                            className={s <= entry.mood_rating ? 'fill-amber-400 text-amber-400' : 'text-warm-300 dark:text-warm-600'}
                           />
                         ))}
                       </div>
                     )}
                   </div>
-                  <p className="text-gray-700 dark:text-gray-300 line-clamp-2">{entry.content}</p>
+                  <p className="text-warm-700 dark:text-warm-300 line-clamp-2">{entry.content}</p>
                 </div>
               )
             })}

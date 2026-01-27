@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { format, startOfWeek, endOfWeek } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { supabase } from '../lib/supabase'
@@ -135,18 +135,18 @@ export default function WeeklyReport() {
 
     const avgMood = weeklyStats.avgMood > 0 ? `\nPromedio del día: ${'★'.repeat(Math.round(weeklyStats.avgMood))}${'☆'.repeat(5 - Math.round(weeklyStats.avgMood))}` : ''
 
-    const shareText = `Mi semana en StoryWorthy:
+    const shareText = `Mi semana en Clarity:
 
 ${weeklyStats.daysCompleted} de 7 días completados
 ${weeklyStats.totalWords} palabras escritas${avgMood}
 Racha actual: ${streak} días
 
-Viviendo más conscientemente con StoryWorthy`
+Viviendo más conscientemente con Clarity`
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Mi Reporte Semanal - StoryWorthy',
+          title: 'Mi Reporte Semanal - Clarity',
           text: shareText,
         })
       } catch (error) {
@@ -164,7 +164,7 @@ Viviendo más conscientemente con StoryWorthy`
     return (
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="text-center">
-          <p className="text-gray-500">Cargando reporte...</p>
+          <p className="text-warm-400">Cargando reporte...</p>
         </div>
       </div>
     )
@@ -193,13 +193,13 @@ Viviendo más conscientemente con StoryWorthy`
         </button>
 
         <div className="text-center">
-          <h2 className="text-2xl font-bold">Reporte Semanal</h2>
-          <p className="text-gray-500 mt-1">
+          <h2 className="text-2xl font-bold tracking-tight">Reporte Semanal</h2>
+          <p className="text-warm-500 mt-1">
             {format(weeklyStats.weekStart, "d 'de' MMMM", { locale: es })} -{' '}
             {format(weeklyStats.weekEnd, "d 'de' MMMM, yyyy", { locale: es })}
           </p>
           {!isCurrentWeek && (
-            <button onClick={goToCurrentWeek} className="text-sm text-primary-600 hover:underline mt-1">
+            <button onClick={goToCurrentWeek} className="text-sm text-primary-600 dark:text-primary-400 hover:underline mt-1">
               Ir a semana actual
             </button>
           )}
@@ -218,43 +218,43 @@ Viviendo más conscientemente con StoryWorthy`
       {/* Estadísticas principales */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div className="card">
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Días</h3>
+          <h3 className="text-sm font-medium text-warm-500 dark:text-warm-400 mb-1">Días</h3>
           <p className="text-3xl font-bold text-primary-600 dark:text-primary-400">
             {weeklyStats.daysCompleted}/7
           </p>
-          <div className="mt-2 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+          <div className="mt-2 bg-surface-200 dark:bg-dark-elevated rounded-full h-2">
             <div
-              className="bg-primary-600 h-2 rounded-full transition-all"
+              className="bg-primary-600 h-2 rounded-full transition-all duration-500"
               style={{ width: `${weeklyStats.completionRate}%` }}
             />
           </div>
         </div>
 
         <div className="card">
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Palabras</h3>
+          <h3 className="text-sm font-medium text-warm-500 dark:text-warm-400 mb-1">Palabras</h3>
           <p className="text-3xl font-bold text-primary-600 dark:text-primary-400">
             {weeklyStats.totalWords}
           </p>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-warm-400 mt-1">
             ~{Math.round(weeklyStats.totalWords / Math.max(weeklyStats.daysCompleted, 1))}/día
           </p>
         </div>
 
         <div className="card">
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Promedio</h3>
+          <h3 className="text-sm font-medium text-warm-500 dark:text-warm-400 mb-1">Promedio</h3>
           <div className="flex items-baseline gap-2">
-            <p className="text-3xl font-bold text-yellow-500">{avgMood > 0 ? avgMood : '-'}</p>
-            {avgMood > 0 && <Star size={20} className="fill-yellow-400 text-yellow-400" />}
+            <p className="text-3xl font-bold text-amber-500">{avgMood > 0 ? avgMood : '-'}</p>
+            {avgMood > 0 && <Star size={20} className="fill-amber-400 text-amber-400" />}
           </div>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-warm-400 mt-1">
             {moodEntries.length > 0 ? `${moodEntries.length} días evaluados` : 'Sin evaluación'}
           </p>
         </div>
 
         <div className="card">
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Racha</h3>
-          <p className="text-3xl font-bold text-orange-600 dark:text-orange-400">{streak}</p>
-          <p className="text-sm text-gray-500 mt-1">días seguidos</p>
+          <h3 className="text-sm font-medium text-warm-500 dark:text-warm-400 mb-1">Racha</h3>
+          <p className="text-3xl font-bold text-coral-500 dark:text-coral-400">{streak}</p>
+          <p className="text-sm text-warm-400 mt-1">días seguidos</p>
         </div>
       </div>
 
@@ -271,21 +271,21 @@ Viviendo más conscientemente con StoryWorthy`
             return (
               <div
                 key={dayStr}
-                className={`text-center p-3 rounded-lg border-2 ${
+                className={`text-center p-3 rounded-xl border-2 transition-all duration-200 ${
                   hasEntry
-                    ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                    : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800'
-                } ${isToday ? 'ring-2 ring-primary-500' : ''}`}
+                    ? 'border-sage-500 bg-sage-500/10 dark:bg-sage-500/10'
+                    : 'border-surface-200 dark:border-dark-border bg-surface-50 dark:bg-dark-elevated'
+                } ${isToday ? 'ring-2 ring-primary-500 ring-offset-2 dark:ring-offset-dark-surface' : ''}`}
               >
-                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                <p className="text-xs font-medium text-warm-500 dark:text-warm-400">
                   {format(day, 'EEE', { locale: es })}
                 </p>
                 <p className="text-lg font-bold mt-1">{format(day, 'd')}</p>
                 <div className="mt-2">
                   {hasEntry ? (
-                    <CheckCircle size={20} className="mx-auto text-green-600" />
+                    <CheckCircle size={20} className="mx-auto text-sage-500" />
                   ) : (
-                    <XCircle size={20} className="mx-auto text-gray-300 dark:text-gray-600" />
+                    <XCircle size={20} className="mx-auto text-warm-300 dark:text-warm-600" />
                   )}
                 </div>
                 {entry?.mood_rating > 0 && (
@@ -294,7 +294,7 @@ Viviendo más conscientemente con StoryWorthy`
                       <Star
                         key={s}
                         size={8}
-                        className={s <= entry.mood_rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
+                        className={s <= entry.mood_rating ? 'fill-amber-400 text-amber-400' : 'text-warm-300 dark:text-warm-600'}
                       />
                     ))}
                   </div>
@@ -315,7 +315,7 @@ Viviendo más conscientemente con StoryWorthy`
               {weeklyStats.entries.map((entry) => (
                 <div key={entry.id} className="border-l-4 border-primary-500 pl-4 py-2">
                   <div className="flex justify-between items-center mb-1">
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    <p className="text-sm font-medium text-warm-500 dark:text-warm-400">
                       {format(new Date(entry.entry_date), "EEEE, d 'de' MMMM", { locale: es })}
                     </p>
                     {entry.mood_rating > 0 && (
@@ -324,20 +324,20 @@ Viviendo más conscientemente con StoryWorthy`
                           <Star
                             key={s}
                             size={12}
-                            className={s <= entry.mood_rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
+                            className={s <= entry.mood_rating ? 'fill-amber-400 text-amber-400' : 'text-warm-300 dark:text-warm-600'}
                           />
                         ))}
                       </div>
                     )}
                   </div>
                   {entry.morning_intention && (
-                    <p className="text-sm text-yellow-600 dark:text-yellow-400 mb-1">
+                    <p className="text-sm text-amber-600 dark:text-amber-400 mb-1">
                       Intención: {entry.morning_intention}
                     </p>
                   )}
-                  <p className="text-gray-700 dark:text-gray-300">{entry.content}</p>
+                  <p className="text-warm-700 dark:text-warm-300">{entry.content}</p>
                   {(entry.gratitude_1 || entry.gratitude_2 || entry.gratitude_3) && (
-                    <div className="mt-2 text-sm text-rose-600 dark:text-rose-400">
+                    <div className="mt-2 text-sm text-coral-500 dark:text-coral-400">
                       {entry.gratitude_1 && <p>♥ {entry.gratitude_1}</p>}
                       {entry.gratitude_2 && <p>♥ {entry.gratitude_2}</p>}
                       {entry.gratitude_3 && <p>♥ {entry.gratitude_3}</p>}
@@ -347,23 +347,23 @@ Viviendo más conscientemente con StoryWorthy`
               ))}
             </div>
           ) : (
-            <p className="text-gray-500 text-center py-8">No hay entradas esta semana.</p>
+            <p className="text-warm-400 text-center py-8">No hay entradas esta semana.</p>
           )}
         </div>
 
         {/* Columna derecha: Reflexión semanal */}
         <div className="card">
           <div className="flex items-center gap-2 mb-2">
-            <PenLine size={22} className="text-purple-500" />
+            <PenLine size={22} className="text-primary-500" />
             <h3 className="text-lg font-semibold">Reflexión semanal</h3>
           </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
+          <p className="text-sm text-warm-400 mb-5">
             Puedes ir anotando durante la semana. El domingo, revisa todo y completa tu reflexión.
           </p>
 
           <div className="space-y-5">
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+              <label className="block text-sm font-medium mb-2 text-warm-700 dark:text-warm-300">
                 ¿Qué salió bien esta semana?
               </label>
               <textarea
@@ -375,7 +375,7 @@ Viviendo más conscientemente con StoryWorthy`
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+              <label className="block text-sm font-medium mb-2 text-warm-700 dark:text-warm-300">
                 ¿Qué salió mal esta semana?
               </label>
               <textarea
@@ -387,19 +387,19 @@ Viviendo más conscientemente con StoryWorthy`
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+              <label className="block text-sm font-medium mb-2 text-warm-700 dark:text-warm-300">
                 ¿Cuál fue el momento más significativo?
               </label>
               <textarea
                 value={reflection.most_significant}
                 onChange={(e) => setReflection({ ...reflection, most_significant: e.target.value })}
-                placeholder="De todos tus momentos story-worthy, ¿cuál destaca más?"
+                placeholder="De todos tus momentos, ¿cuál destaca más?"
                 className="input-field min-h-[80px] resize-y"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+              <label className="block text-sm font-medium mb-2 text-warm-700 dark:text-warm-300">
                 ¿Qué patrón notas en tus entradas?
               </label>
               <textarea
@@ -411,7 +411,7 @@ Viviendo más conscientemente con StoryWorthy`
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+              <label className="block text-sm font-medium mb-2 text-warm-700 dark:text-warm-300">
                 ¿Qué quieres hacer diferente la próxima semana?
               </label>
               <textarea
@@ -425,10 +425,10 @@ Viviendo más conscientemente con StoryWorthy`
             <button
               onClick={handleSaveReflection}
               disabled={reflectionSaving || !hasReflectionContent}
-              className={`w-full py-3 px-6 rounded-xl font-semibold text-white shadow-lg transition-all flex items-center justify-center gap-2 ${
+              className={`w-full py-3.5 px-6 rounded-2xl font-semibold text-white shadow-soft-lg transition-all duration-200 flex items-center justify-center gap-2 ${
                 reflectionSaved
-                  ? 'bg-green-600'
-                  : 'bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed'
+                  ? 'bg-sage-500'
+                  : 'bg-primary-600 hover:bg-primary-700 hover:shadow-soft-xl active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed'
               }`}
             >
               <Save size={20} />
@@ -454,7 +454,7 @@ Viviendo más conscientemente con StoryWorthy`
 
       {weeklyStats.daysCompleted === 0 && (
         <div className="mt-8 text-center">
-          <p className="text-gray-500">No hay entradas esta semana. ¡Empieza a registrar tus momentos!</p>
+          <p className="text-warm-400">No hay entradas esta semana. ¡Empieza a registrar tus momentos!</p>
         </div>
       )}
     </div>

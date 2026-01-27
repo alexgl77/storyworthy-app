@@ -7,7 +7,7 @@ export default function StarRating({ rating = 0, onRatingChange, size = 28, labe
   return (
     <div>
       {label && (
-        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{label}</p>
+        <p className="text-sm font-medium text-warm-700 dark:text-warm-300 mb-2">{label}</p>
       )}
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
@@ -17,20 +17,20 @@ export default function StarRating({ rating = 0, onRatingChange, size = 28, labe
             onClick={() => onRatingChange(star === rating ? 0 : star)}
             onMouseEnter={() => setHovered(star)}
             onMouseLeave={() => setHovered(0)}
-            className="transition-transform hover:scale-110"
+            className="transition-transform duration-200 hover:scale-110"
           >
             <Star
               size={size}
-              className={`transition-colors ${
+              className={`transition-colors duration-200 ${
                 star <= (hovered || rating)
-                  ? 'fill-yellow-400 text-yellow-400'
-                  : 'text-gray-300 dark:text-gray-600'
+                  ? 'fill-amber-400 text-amber-400'
+                  : 'text-warm-300 dark:text-warm-600'
               }`}
             />
           </button>
         ))}
         {rating > 0 && (
-          <span className="ml-2 text-sm text-gray-500 dark:text-gray-400 self-center">
+          <span className="ml-2 text-sm text-warm-500 dark:text-warm-400 self-center">
             {rating === 1 && 'Difícil'}
             {rating === 2 && 'Regular'}
             {rating === 3 && 'Normal'}
