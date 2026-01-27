@@ -4,12 +4,14 @@ import { Star } from 'lucide-react'
 export default function StarRating({ rating = 0, onRatingChange, size = 28, label }) {
   const [hovered, setHovered] = useState(0)
 
+  const labels = ['', 'Difícil', 'Regular', 'Normal', 'Buen día', 'Excelente']
+
   return (
     <div>
       {label && (
-        <p className="text-sm font-medium text-warm-700 dark:text-warm-300 mb-2">{label}</p>
+        <p className="text-sm font-medium text-charcoal dark:text-gray-300 mb-2">{label}</p>
       )}
-      <div className="flex gap-1">
+      <div className="flex items-center gap-1.5">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
@@ -21,21 +23,18 @@ export default function StarRating({ rating = 0, onRatingChange, size = 28, labe
           >
             <Star
               size={size}
+              strokeWidth={1.5}
               className={`transition-colors duration-200 ${
                 star <= (hovered || rating)
                   ? 'fill-amber-400 text-amber-400'
-                  : 'text-warm-300 dark:text-warm-600'
+                  : 'text-gray-200 dark:text-gray-600'
               }`}
             />
           </button>
         ))}
         {rating > 0 && (
-          <span className="ml-2 text-sm text-warm-500 dark:text-warm-400 self-center">
-            {rating === 1 && 'Difícil'}
-            {rating === 2 && 'Regular'}
-            {rating === 3 && 'Normal'}
-            {rating === 4 && 'Buen día'}
-            {rating === 5 && 'Excelente'}
+          <span className="ml-2 text-xs text-gray-400 self-center">
+            {labels[rating]}
           </span>
         )}
       </div>

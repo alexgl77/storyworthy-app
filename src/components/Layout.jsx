@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useDarkMode } from '../hooks/useDarkMode'
-import { Home, BarChart3, LogOut, Moon, Sun } from 'lucide-react'
+import { Sun, BarChart3, LogOut, Moon, Home } from 'lucide-react'
 
 export default function Layout({ children }) {
   const { user, signOut } = useAuth()
@@ -20,104 +20,113 @@ export default function Layout({ children }) {
   ]
 
   return (
-    <div className="min-h-screen bg-surface-50 dark:bg-dark-bg">
-      {/* Header */}
-      <header className="bg-white/80 dark:bg-dark-surface/80 backdrop-blur-lg border-b border-surface-200/60 dark:border-dark-border sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <Link to="/" className="text-xl font-bold tracking-tight text-primary-600 dark:text-primary-400">
-              Clarity
-            </Link>
+    <div className="min-h-screen bg-canvas dark:bg-dark-bg flex">
+      {/* Sidebar — Desktop */}
+      <aside className="hidden md:flex flex-col items-center justify-between w-[72px] py-8 border-r border-gray-100/60 dark:border-dark-border bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm fixed h-full z-20">
+        <div className="flex flex-col items-center gap-1">
+          {/* Logo */}
+          <Link to="/" className="mb-8">
+            <span className="text-xl font-serif font-bold text-indigo-600 dark:text-indigo-400">C</span>
+          </Link>
 
-            <div className="flex items-center gap-3">
-              {/* Navegación */}
-              <nav className="hidden md:flex gap-1">
-                {navItems.map((item) => {
-                  const Icon = item.icon
-                  const isActive = location.pathname === item.path
-                  return (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-200 ${
-                        isActive
-                          ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 shadow-soft-sm'
-                          : 'text-warm-500 dark:text-warm-400 hover:bg-surface-100 dark:hover:bg-dark-elevated'
-                      }`}
-                    >
-                      <Icon size={20} />
-                      <span className="font-medium">{item.label}</span>
-                    </Link>
-                  )
-                })}
-              </nav>
-
-              {/* Toggle modo oscuro */}
-              <button
-                onClick={toggleDarkMode}
-                className="p-2 rounded-xl bg-surface-100 dark:bg-dark-elevated hover:bg-surface-200 dark:hover:bg-dark-border transition-all duration-200"
-                aria-label="Cambiar tema"
+          {/* Nav items */}
+          {navItems.map((item) => {
+            const Icon = item.icon
+            const isActive = location.pathname === item.path
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center justify-center w-11 h-11 rounded-2xl transition-all duration-200 group relative ${
+                  isActive
+                    ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400'
+                    : 'text-gray-400 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-dark-elevated hover:text-charcoal dark:hover:text-gray-300'
+                }`}
+                title={item.label}
               >
-                {darkMode ? <Sun size={20} className="text-warm-400" /> : <Moon size={20} className="text-warm-500" />}
-              </button>
-
-              {/* Botón cerrar sesión */}
-              {user && (
-                <button
-                  onClick={handleSignOut}
-                  className="flex items-center gap-2 px-4 py-2 text-warm-500 dark:text-warm-400 hover:bg-surface-100 dark:hover:bg-dark-elevated rounded-xl transition-all duration-200"
-                >
-                  <LogOut size={20} />
-                  <span className="hidden md:inline">Salir</span>
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Navegación móvil */}
-          <nav className="md:hidden flex border-t border-surface-200/60 dark:border-dark-border -mx-4 px-4">
-            {navItems.map((item) => {
-              const Icon = item.icon
-              const isActive = location.pathname === item.path
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex-1 flex flex-col items-center gap-1 py-3 transition-all duration-200 ${
-                    isActive
-                      ? 'text-primary-600 dark:text-primary-400'
-                      : 'text-warm-400 dark:text-warm-500'
-                  }`}
-                >
-                  <Icon size={22} />
-                  <span className="text-xs font-medium">{item.label}</span>
-                </Link>
-              )
-            })}
-          </nav>
+                <Icon size={20} strokeWidth={isActive ? 2 : 1.5} />
+              </Link>
+            )
+          })}
         </div>
-      </header>
 
-      {/* Contenido principal */}
-      <main className="pb-20 md:pb-8">{children}</main>
+        <div className="flex flex-col items-center gap-1">
+          {/* Dark mode toggle */}
+          <button
+            onClick={toggleDarkMode}
+            className="flex items-center justify-center w-11 h-11 rounded-2xl text-gray-400 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-dark-elevated hover:text-charcoal dark:hover:text-gray-300 transition-all duration-200"
+            title="Cambiar tema"
+          >
+            {darkMode ? <Sun size={20} strokeWidth={1.5} /> : <Moon size={20} strokeWidth={1.5} />}
+          </button>
 
-      {/* Footer */}
-      <footer className="bg-white/60 dark:bg-dark-surface/60 backdrop-blur-sm border-t border-surface-200/40 dark:border-dark-border py-6 mt-12">
-        <div className="max-w-7xl mx-auto px-4 text-center text-sm text-warm-400">
-          <p>
-            Inspirado en <strong className="text-warm-500">Homework for Life</strong> de{' '}
-            <a
-              href="https://matthewdicks.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary-600 dark:text-primary-400 hover:underline"
+          {/* Sign out */}
+          {user && (
+            <button
+              onClick={handleSignOut}
+              className="flex items-center justify-center w-11 h-11 rounded-2xl text-gray-400 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-dark-elevated hover:text-coral-500 transition-all duration-200"
+              title="Cerrar sesión"
             >
-              Matthew Dicks
-            </a>
-          </p>
-          <p className="mt-2 text-warm-300 dark:text-warm-600">Clarity &middot; Reflexión Diaria Consciente</p>
+              <LogOut size={20} strokeWidth={1.5} />
+            </button>
+          )}
         </div>
-      </footer>
+      </aside>
+
+      {/* Main content area */}
+      <div className="flex-1 md:ml-[72px]">
+        {/* Mobile header */}
+        <header className="md:hidden flex items-center justify-between px-4 h-14 border-b border-gray-100/60 dark:border-dark-border bg-white/80 dark:bg-dark-surface/80 backdrop-blur-lg sticky top-0 z-10">
+          <Link to="/" className="font-serif font-bold text-lg text-indigo-600 dark:text-indigo-400">
+            Clarity
+          </Link>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 rounded-xl text-gray-400 hover:text-charcoal dark:hover:text-gray-300 transition-colors"
+            >
+              {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+            {user && (
+              <button
+                onClick={handleSignOut}
+                className="p-2 rounded-xl text-gray-400 hover:text-coral-500 transition-colors"
+              >
+                <LogOut size={18} />
+              </button>
+            )}
+          </div>
+        </header>
+
+        {/* Page content */}
+        <main className="pb-20 md:pb-12">
+          {children}
+        </main>
+      </div>
+
+      {/* Mobile bottom nav */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-20 bg-white/90 dark:bg-dark-surface/90 backdrop-blur-lg border-t border-gray-100/60 dark:border-dark-border">
+        <div className="flex">
+          {navItems.map((item) => {
+            const Icon = item.icon
+            const isActive = location.pathname === item.path
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex-1 flex flex-col items-center gap-1 py-3 transition-all duration-200 ${
+                  isActive
+                    ? 'text-indigo-600 dark:text-indigo-400'
+                    : 'text-gray-400 dark:text-gray-500'
+                }`}
+              >
+                <Icon size={20} strokeWidth={isActive ? 2 : 1.5} />
+                <span className="text-[10px] font-medium">{item.label}</span>
+              </Link>
+            )
+          })}
+        </div>
+      </nav>
     </div>
   )
 }

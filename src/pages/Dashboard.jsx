@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
-import { format } from 'date-fns'
+import { format, startOfWeek, addDays } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { getPromptsForToday } from '../utils/prompts'
 import { calculateStreak } from '../utils/stats'
 import StarRating from '../components/StarRating'
-import { Sparkles, Calendar, TrendingUp, Sun, Moon, Save, Star, X } from 'lucide-react'
+import { Sparkles, Flame, Save, X } from 'lucide-react'
 
 export default function Dashboard() {
   const { user } = useAuth()
@@ -124,222 +124,237 @@ export default function Dashboard() {
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length
   const hasAnyContent = content.trim() || morningIntention.trim() || gratitude1.trim() || gratitude2.trim() || gratitude3.trim() || moodRating > 0
 
+  // Weekly progress: which days of this week have entries
+  const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 })
+  const weekDays = Array.from({ length: 7 }, (_, i) => format(addDays(weekStart, i), 'yyyy-MM-dd'))
+  const entryDates = new Set(allEntries.map((e) => e.entry_date))
+
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      {/* Intro */}
+    <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 md:py-12">
+      {/* Intro dismissible */}
       {showIntro && (
-        <div className="card mb-6 relative bg-gradient-to-br from-primary-50 to-surface-50 dark:from-primary-900/20 dark:to-dark-surface border-primary-200/40 dark:border-primary-800/30">
+        <div className="relative mb-8 p-6 rounded-2xl bg-gradient-to-br from-indigo-50/80 to-canvas dark:from-indigo-900/10 dark:to-dark-surface border border-indigo-100/40 dark:border-indigo-800/20">
           <button
             onClick={dismissIntro}
-            className="absolute top-4 right-4 p-1 rounded-lg text-warm-400 hover:text-warm-600 hover:bg-surface-200/60 dark:hover:bg-dark-elevated transition-all duration-200"
+            className="absolute top-4 right-4 p-1 rounded-lg text-gray-300 hover:text-gray-500 transition-colors"
             aria-label="Cerrar"
           >
-            <X size={18} />
+            <X size={16} />
           </button>
-          <h3 className="text-lg font-bold text-primary-700 dark:text-primary-300 mb-2">
+          <h3 className="font-serif text-lg text-charcoal dark:text-gray-100 mb-1">
             Vive con intención, no en piloto automático.
           </h3>
-          <p className="text-sm text-warm-600 dark:text-warm-400 leading-relaxed pr-6">
-            Cada día: establece una intención, captura el momento más significativo, evalúa cómo te fue y agradece. Cada semana: reflexiona sobre tus patrones.
+          <p className="text-sm text-gray-400 dark:text-gray-500 leading-relaxed pr-6">
+            Cada día: establece una intención, captura tu momento más significativo, evalúa cómo te fue y agradece. Cada semana: reflexiona sobre tus patrones.
           </p>
         </div>
       )}
 
-      {/* Header con estadísticas */}
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold tracking-tight mb-2">
-          {format(new Date(), "EEEE, d 'de' MMMM", { locale: es })}
-        </h2>
-        <div className="flex gap-4 mt-4">
-          <div className="card flex-1 !p-4">
-            <div className="flex items-center gap-2 text-coral-500 dark:text-coral-400">
-              <TrendingUp size={20} />
-              <span className="font-semibold">Racha</span>
-            </div>
-            <p className="text-2xl font-bold mt-1">{streak} días</p>
-          </div>
-          <div className="card flex-1 !p-4">
-            <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400">
-              <Calendar size={20} />
-              <span className="font-semibold">Total</span>
-            </div>
-            <p className="text-2xl font-bold mt-1">{allEntries.length}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Check-in matutino */}
-      <div className="card mb-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Sun size={22} className="text-amber-500" />
-          <h3 className="text-xl font-semibold">Intención del día</h3>
-        </div>
-        <input
-          type="text"
-          value={morningIntention}
-          onChange={(e) => setMorningIntention(e.target.value)}
-          placeholder="¿A qué voy a prestar atención hoy? ¿Qué quiero que sea diferente?"
-          className="input-field"
-        />
-        {isMorning && !morningIntention && !todayEntry?.morning_intention && (
-          <p className="text-sm text-amber-600 dark:text-amber-400 mt-2">
-            Establece tu intención para hoy
+      <div className="flex gap-12">
+        {/* ─── Main content ─── */}
+        <div className="flex-1 min-w-0">
+          {/* Date */}
+          <p className="text-sm text-gray-400 dark:text-gray-500 mb-1 uppercase tracking-wider font-medium">
+            {format(new Date(), "EEEE", { locale: es })}
           </p>
-        )}
-      </div>
+          <h1 className="font-serif text-3xl md:text-4xl font-medium text-charcoal dark:text-gray-100 mb-12">
+            {format(new Date(), "d 'de' MMMM", { locale: es })}
+          </h1>
 
-      {/* Momento del día */}
-      <div className="card mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center gap-2">
-            <Moon size={22} className="text-primary-500" />
-            <h3 className="text-xl font-semibold">Momento del día</h3>
-          </div>
-          <button
-            onClick={() => setShowPrompts(!showPrompts)}
-            className="flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline"
-          >
-            <Sparkles size={18} />
-            <span className="text-sm">Ideas</span>
-          </button>
-        </div>
+          {/* Morning Intention */}
+          <section className="mb-12">
+            <label className="block font-serif text-xl text-charcoal dark:text-gray-200 mb-4">
+              Intención del día
+            </label>
+            <input
+              type="text"
+              value={morningIntention}
+              onChange={(e) => setMorningIntention(e.target.value)}
+              placeholder="Hoy mi intención es..."
+              className="input-organic text-lg"
+            />
+            {isMorning && !morningIntention && !todayEntry?.morning_intention && (
+              <p className="text-xs text-clay-400 mt-3">
+                Establece tu intención para hoy
+              </p>
+            )}
+          </section>
 
-        {showPrompts && (
-          <div className="mb-4 p-4 bg-primary-50 dark:bg-primary-900/20 rounded-xl border border-primary-200/60 dark:border-primary-800/40">
-            <p className="text-sm font-medium text-primary-900 dark:text-primary-100 mb-2">
-              Si no sabes qué escribir, prueba con estas preguntas:
+          {/* Moment of the Day */}
+          <section className="mb-12">
+            <div className="flex justify-between items-baseline mb-4">
+              <label className="font-serif text-xl text-charcoal dark:text-gray-200">
+                Momento del día
+              </label>
+              <button
+                onClick={() => setShowPrompts(!showPrompts)}
+                className="flex items-center gap-1.5 text-gray-300 hover:text-indigo-500 transition-colors"
+              >
+                <Sparkles size={14} />
+                <span className="text-xs">Ideas</span>
+              </button>
+            </div>
+
+            {showPrompts && (
+              <div className="mb-4 p-5 rounded-2xl bg-canvas-alt dark:bg-dark-elevated border border-gray-100/60 dark:border-dark-border">
+                <p className="text-xs font-medium text-gray-400 dark:text-gray-500 mb-3 uppercase tracking-wider">
+                  Si no sabes qué escribir:
+                </p>
+                <ul className="space-y-1.5 text-sm text-gray-500 dark:text-gray-400">
+                  {prompts.map((prompt, idx) => (
+                    <li key={idx} className="flex gap-2">
+                      <span className="text-gray-300">·</span>
+                      {prompt}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Describe el momento más significativo de tu día..."
+              className="input-organic text-base min-h-[180px] resize-y leading-relaxed"
+            />
+            <p className="text-xs text-gray-300 dark:text-gray-600 mt-2">
+              {wordCount} {wordCount === 1 ? 'palabra' : 'palabras'}
             </p>
-            <ul className="space-y-1 text-sm text-primary-700 dark:text-primary-300">
-              {prompts.map((prompt, idx) => (
-                <li key={idx}>• {prompt}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+          </section>
 
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Describe el momento más significativo de tu día. No tiene que ser extraordinario, solo algo que te sacó del piloto automático..."
-          className="input-field min-h-[160px] resize-y"
-        />
-
-        <div className="flex justify-between items-center mt-3">
-          <span className="text-sm text-warm-400">
-            {wordCount} {wordCount === 1 ? 'palabra' : 'palabras'}
-          </span>
-        </div>
-      </div>
-
-      {/* Rating del día */}
-      <div className="card mb-6">
-        <div className="flex items-center gap-2 mb-4">
-          <h3 className="text-lg font-semibold">¿Cómo fue tu día?</h3>
-        </div>
-        <StarRating
-          rating={moodRating}
-          onRatingChange={setMoodRating}
-          size={32}
-        />
-      </div>
-
-      {/* Gratitud */}
-      <div className="card mb-6">
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-xl">🙏</span>
-          <h3 className="text-xl font-semibold">Agradecimiento</h3>
-        </div>
-        <p className="text-sm text-warm-400 mb-4">
-          3 cosas por las que estás agradecido hoy
-        </p>
-        <div className="space-y-3">
-          <div className="flex items-center gap-3">
-            <span className="text-lg font-bold text-primary-500 w-6">1</span>
-            <input
-              type="text"
-              value={gratitude1}
-              onChange={(e) => setGratitude1(e.target.value)}
-              placeholder="Estoy agradecido por..."
-              className="input-field"
+          {/* How was your day */}
+          <section className="mb-12">
+            <label className="block font-serif text-xl text-charcoal dark:text-gray-200 mb-4">
+              ¿Cómo fue tu día?
+            </label>
+            <StarRating
+              rating={moodRating}
+              onRatingChange={setMoodRating}
+              size={28}
             />
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-lg font-bold text-primary-500 w-6">2</span>
-            <input
-              type="text"
-              value={gratitude2}
-              onChange={(e) => setGratitude2(e.target.value)}
-              placeholder="Estoy agradecido por..."
-              className="input-field"
-            />
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-lg font-bold text-primary-500 w-6">3</span>
-            <input
-              type="text"
-              value={gratitude3}
-              onChange={(e) => setGratitude3(e.target.value)}
-              placeholder="Estoy agradecido por..."
-              className="input-field"
-            />
-          </div>
-        </div>
-      </div>
+          </section>
 
-      {/* Botón guardar */}
-      <div className="sticky bottom-4 z-10">
-        <button
-          onClick={handleSave}
-          disabled={loading || !hasAnyContent}
-          className={`w-full py-3.5 px-6 rounded-2xl font-semibold text-white shadow-soft-lg transition-all duration-200 flex items-center justify-center gap-2 ${
-            saved
-              ? 'bg-sage-500'
-              : 'bg-primary-600 hover:bg-primary-700 hover:shadow-soft-xl active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed'
-          }`}
-        >
-          <Save size={20} />
-          {loading ? 'Guardando...' : saved ? '¡Guardado!' : todayEntry ? 'Actualizar todo' : 'Guardar todo'}
-        </button>
-      </div>
-
-      {todayEntry && (
-        <p className="text-xs text-center text-warm-400 mt-2">
-          Última actualización: {format(new Date(todayEntry.updated_at), "HH:mm")}
-        </p>
-      )}
-
-      {/* Entradas recientes */}
-      {allEntries.length > 1 && (
-        <div className="mt-8">
-          <h3 className="text-xl font-semibold mb-4">Entradas recientes</h3>
-          <div className="space-y-3">
-            {allEntries.slice(0, 5).map((entry) => {
-              if (entry.entry_date === today) return null
-              return (
-                <div key={entry.id} className="card !p-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <p className="text-sm font-medium text-warm-500 dark:text-warm-400">
-                      {format(new Date(entry.entry_date), "EEEE, d 'de' MMMM", { locale: es })}
-                    </p>
-                    {entry.mood_rating > 0 && (
-                      <div className="flex gap-0.5">
-                        {[1, 2, 3, 4, 5].map((s) => (
-                          <Star
-                            key={s}
-                            size={14}
-                            className={s <= entry.mood_rating ? 'fill-amber-400 text-amber-400' : 'text-warm-300 dark:text-warm-600'}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-warm-700 dark:text-warm-300 line-clamp-2">{entry.content}</p>
+          {/* Gratitude */}
+          <section className="mb-12">
+            <label className="block font-serif text-xl text-charcoal dark:text-gray-200 mb-2">
+              Agradecimiento
+            </label>
+            <p className="text-sm text-gray-400 dark:text-gray-500 mb-6">
+              3 cosas por las que estás agradecido hoy
+            </p>
+            <div className="space-y-4">
+              {[
+                { value: gratitude1, setter: setGratitude1 },
+                { value: gratitude2, setter: setGratitude2 },
+                { value: gratitude3, setter: setGratitude3 },
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-4">
+                  <span className="text-sm font-medium text-gray-300 dark:text-gray-600 w-5 text-right">{idx + 1}</span>
+                  <input
+                    type="text"
+                    value={item.value}
+                    onChange={(e) => item.setter(e.target.value)}
+                    placeholder="Estoy agradecido por..."
+                    className="input-organic"
+                  />
                 </div>
-              )
-            })}
+              ))}
+            </div>
+          </section>
+
+          {/* Save button */}
+          <div className="sticky bottom-20 md:bottom-8 z-10">
+            <button
+              onClick={handleSave}
+              disabled={loading || !hasAnyContent}
+              className={`w-full py-3.5 px-6 rounded-2xl font-medium text-white shadow-zen-lg transition-all duration-200 flex items-center justify-center gap-2 ${
+                saved
+                  ? 'bg-sage-400'
+                  : 'bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed'
+              }`}
+            >
+              <Save size={18} strokeWidth={1.5} />
+              {loading ? 'Guardando...' : saved ? '¡Guardado!' : todayEntry ? 'Actualizar' : 'Guardar'}
+            </button>
+          </div>
+
+          {todayEntry && (
+            <p className="text-[11px] text-center text-gray-300 dark:text-gray-600 mt-3">
+              Última actualización: {format(new Date(todayEntry.updated_at), "HH:mm")}
+            </p>
+          )}
+        </div>
+
+        {/* ─── Right sidebar — Insights ─── */}
+        <aside className="hidden lg:block w-56 shrink-0">
+          <div className="sticky top-12 space-y-6">
+            {/* Streak */}
+            <div className="text-center p-6 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border">
+              <Flame size={24} className="mx-auto mb-2 text-coral-500" strokeWidth={1.5} />
+              <p className="text-3xl font-serif font-medium text-charcoal dark:text-gray-100">{streak}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">días seguidos</p>
+            </div>
+
+            {/* Weekly progress */}
+            <div className="p-6 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mb-3 uppercase tracking-wider font-medium">Esta semana</p>
+              <div className="flex justify-between">
+                {weekDays.map((day, idx) => {
+                  const hasEntry = entryDates.has(day)
+                  const isToday = day === today
+                  const dayLabel = format(addDays(weekStart, idx), 'EEEEE', { locale: es })
+                  return (
+                    <div key={day} className="flex flex-col items-center gap-1.5">
+                      <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase">{dayLabel}</span>
+                      <div
+                        className={`w-5 h-5 rounded-full transition-all duration-300 ${
+                          hasEntry
+                            ? 'bg-sage-400'
+                            : isToday
+                            ? 'bg-indigo-100 dark:bg-indigo-900/30 ring-2 ring-indigo-400 ring-offset-1 dark:ring-offset-dark-surface'
+                            : 'bg-gray-100 dark:bg-dark-elevated'
+                        }`}
+                      />
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Total entries */}
+            <div className="text-center p-6 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border">
+              <p className="text-3xl font-serif font-medium text-charcoal dark:text-gray-100">{allEntries.length}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">entradas totales</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      {/* Mobile stats — compact */}
+      <div className="lg:hidden flex gap-3 mt-8 mb-4">
+        <div className="flex-1 text-center p-4 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border">
+          <Flame size={18} className="mx-auto mb-1 text-coral-500" strokeWidth={1.5} />
+          <p className="text-xl font-serif font-medium">{streak}</p>
+          <p className="text-[10px] text-gray-400">racha</p>
+        </div>
+        <div className="flex-1 text-center p-4 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border">
+          <p className="text-xl font-serif font-medium">{allEntries.length}</p>
+          <p className="text-[10px] text-gray-400">entradas</p>
+        </div>
+        <div className="flex-1 p-4 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border">
+          <p className="text-[10px] text-gray-400 mb-2 text-center">semana</p>
+          <div className="flex justify-center gap-1">
+            {weekDays.map((day) => (
+              <div
+                key={day}
+                className={`w-3 h-3 rounded-full ${
+                  entryDates.has(day) ? 'bg-sage-400' : day === today ? 'ring-1 ring-indigo-400 bg-indigo-50 dark:bg-dark-elevated' : 'bg-gray-100 dark:bg-dark-elevated'
+                }`}
+              />
+            ))}
           </div>
         </div>
-      )}
+      </div>
     </div>
   )
 }

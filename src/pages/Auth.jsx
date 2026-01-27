@@ -32,44 +32,47 @@ export default function Auth() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-primary-50 via-surface-50 to-primary-100 dark:from-dark-bg dark:via-dark-bg dark:to-dark-surface">
-      <div className="max-w-md w-full">
-        <div className="text-center mb-10">
-          <h1 className="text-5xl font-bold tracking-tight text-primary-600 dark:text-primary-400 mb-3">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-canvas dark:bg-dark-bg">
+      <div className="max-w-sm w-full">
+        {/* Brand */}
+        <div className="text-center mb-12">
+          <h1 className="font-serif text-5xl font-medium text-charcoal dark:text-gray-100 mb-3">
             Clarity
           </h1>
-          <p className="text-warm-500 dark:text-warm-400 text-lg">
+          <p className="text-gray-400 dark:text-gray-500">
             Sal del piloto automático. Vive conscientemente.
           </p>
         </div>
 
-        <div className="card">
-          <div className="flex gap-2 mb-6">
+        {/* Card */}
+        <div className="card-floating">
+          {/* Toggle */}
+          <div className="flex gap-1 mb-6 p-1 bg-canvas dark:bg-dark-elevated rounded-2xl">
             <button
               onClick={() => setIsLogin(true)}
-              className={`flex-1 py-2.5 px-4 rounded-xl font-medium transition-all duration-200 ${
+              className={`flex-1 py-2 px-4 rounded-xl text-sm font-medium transition-all duration-200 ${
                 isLogin
-                  ? 'bg-primary-600 text-white shadow-soft'
-                  : 'bg-surface-100 dark:bg-dark-elevated text-warm-500 dark:text-warm-400 hover:bg-surface-200 dark:hover:bg-dark-border'
+                  ? 'bg-white dark:bg-dark-surface text-charcoal dark:text-gray-100 shadow-zen'
+                  : 'text-gray-400 dark:text-gray-500 hover:text-charcoal dark:hover:text-gray-300'
               }`}
             >
               Iniciar sesión
             </button>
             <button
               onClick={() => setIsLogin(false)}
-              className={`flex-1 py-2.5 px-4 rounded-xl font-medium transition-all duration-200 ${
+              className={`flex-1 py-2 px-4 rounded-xl text-sm font-medium transition-all duration-200 ${
                 !isLogin
-                  ? 'bg-primary-600 text-white shadow-soft'
-                  : 'bg-surface-100 dark:bg-dark-elevated text-warm-500 dark:text-warm-400 hover:bg-surface-200 dark:hover:bg-dark-border'
+                  ? 'bg-white dark:bg-dark-surface text-charcoal dark:text-gray-100 shadow-zen'
+                  : 'text-gray-400 dark:text-gray-500 hover:text-charcoal dark:hover:text-gray-300'
               }`}
             >
               Crear cuenta
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2 text-warm-700 dark:text-warm-300">
+              <label htmlFor="email" className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
                 Email
               </label>
               <input
@@ -84,7 +87,7 @@ export default function Auth() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-2 text-warm-700 dark:text-warm-300">
+              <label htmlFor="password" className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
                 Contraseña
               </label>
               <input
@@ -98,18 +101,18 @@ export default function Auth() {
                 required
               />
               {!isLogin && (
-                <p className="text-sm text-warm-400 mt-1">Mínimo 6 caracteres</p>
+                <p className="text-xs text-gray-300 mt-2">Mínimo 6 caracteres</p>
               )}
             </div>
 
             {error && (
-              <div className="bg-coral-500/10 border border-coral-500/20 text-coral-600 dark:text-coral-400 px-4 py-3 rounded-xl text-sm">
+              <div className="bg-coral-500/8 border border-coral-500/15 text-coral-500 px-4 py-3 rounded-2xl text-sm">
                 {error}
               </div>
             )}
 
             {message && (
-              <div className="bg-sage-500/10 border border-sage-500/20 text-sage-600 dark:text-sage-400 px-4 py-3 rounded-xl text-sm">
+              <div className="bg-sage-400/8 border border-sage-400/15 text-sage-500 px-4 py-3 rounded-2xl text-sm">
                 {message}
               </div>
             )}
@@ -120,11 +123,11 @@ export default function Auth() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-warm-500 dark:text-warm-400">
+            <p className="text-xs text-gray-400">
               {isLogin ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'}{' '}
               <button
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-primary-600 dark:text-primary-400 font-medium hover:underline"
+                className="text-indigo-500 font-medium hover:underline"
               >
                 {isLogin ? 'Crear una' : 'Inicia sesión'}
               </button>
@@ -132,11 +135,9 @@ export default function Auth() {
           </div>
         </div>
 
-        <div className="mt-8 text-center text-sm text-warm-400">
-          <p>
-            Inspirado en el concepto <strong className="text-warm-500">Homework for Life</strong>
-          </p>
-        </div>
+        <p className="mt-8 text-center text-[11px] text-gray-300 dark:text-gray-600">
+          Inspirado en el concepto Homework for Life
+        </p>
       </div>
     </div>
   )
