@@ -6,7 +6,7 @@ import { useAuth } from '../hooks/useAuth'
 import { getPromptsForToday } from '../utils/prompts'
 import { calculateStreak } from '../utils/stats'
 import StarRating from '../components/StarRating'
-import { Sparkles, Calendar, TrendingUp, Sun, Moon, Heart, Save, Star } from 'lucide-react'
+import { Sparkles, Calendar, TrendingUp, Sun, Moon, Save, Star } from 'lucide-react'
 
 export default function Dashboard() {
   const { user } = useAuth()
@@ -219,7 +219,7 @@ export default function Dashboard() {
       {/* Gratitud */}
       <div className="card mb-6">
         <div className="flex items-center gap-2 mb-4">
-          <Heart size={22} className="text-coral-500" />
+          <span className="text-xl">🙏</span>
           <h3 className="text-xl font-semibold">Agradecimiento</h3>
         </div>
         <p className="text-sm text-warm-400 mb-4">
