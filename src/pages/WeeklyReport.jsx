@@ -337,10 +337,10 @@ Viviendo más conscientemente con Clarity`
                   )}
                   <p className="text-warm-700 dark:text-warm-300">{entry.content}</p>
                   {(entry.gratitude_1 || entry.gratitude_2 || entry.gratitude_3) && (
-                    <div className="mt-2 text-sm text-coral-500 dark:text-coral-400">
-                      {entry.gratitude_1 && <p>♥ {entry.gratitude_1}</p>}
-                      {entry.gratitude_2 && <p>♥ {entry.gratitude_2}</p>}
-                      {entry.gratitude_3 && <p>♥ {entry.gratitude_3}</p>}
+                    <div className="mt-2 text-sm text-warm-500 dark:text-warm-400">
+                      {entry.gratitude_1 && <p>— {entry.gratitude_1}</p>}
+                      {entry.gratitude_2 && <p>— {entry.gratitude_2}</p>}
+                      {entry.gratitude_3 && <p>— {entry.gratitude_3}</p>}
                     </div>
                   )}
                 </div>
