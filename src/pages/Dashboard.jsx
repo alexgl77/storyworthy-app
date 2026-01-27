@@ -162,7 +162,7 @@ export default function Dashboard() {
           </h1>
 
           {/* Morning Intention */}
-          <section className="mb-12">
+          <section className="mb-10 pb-10 border-b border-gray-100 dark:border-dark-border">
             <label className="block font-serif text-xl text-charcoal dark:text-gray-200 mb-4">
               Intención del día
             </label>
@@ -181,7 +181,7 @@ export default function Dashboard() {
           </section>
 
           {/* Moment of the Day */}
-          <section className="mb-12">
+          <section className="mb-10 pb-10 border-b border-gray-100 dark:border-dark-border">
             <div className="flex justify-between items-baseline mb-4">
               <label className="font-serif text-xl text-charcoal dark:text-gray-200">
                 Momento del día
@@ -223,7 +223,7 @@ export default function Dashboard() {
           </section>
 
           {/* How was your day */}
-          <section className="mb-12">
+          <section className="mb-10 pb-10 border-b border-gray-100 dark:border-dark-border">
             <label className="block font-serif text-xl text-charcoal dark:text-gray-200 mb-4">
               ¿Cómo fue tu día?
             </label>
