@@ -5,12 +5,19 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { getPromptsForToday } from '../utils/prompts'
 import { calculateStreak } from '../utils/stats'
-import { Sparkles, Calendar, TrendingUp } from 'lucide-react'
+import StarRating from '../components/StarRating'
+import { Sparkles, Calendar, TrendingUp, Sun, Moon, Heart, Save, Star } from 'lucide-react'
 
 export default function Dashboard() {
   const { user } = useAuth()
   const [content, setContent] = useState('')
+  const [morningIntention, setMorningIntention] = useState('')
+  const [gratitude1, setGratitude1] = useState('')
+  const [gratitude2, setGratitude2] = useState('')
+  const [gratitude3, setGratitude3] = useState('')
+  const [moodRating, setMoodRating] = useState(0)
   const [loading, setLoading] = useState(false)
+  const [saved, setSaved] = useState(false)
   const [todayEntry, setTodayEntry] = useState(null)
   const [allEntries, setAllEntries] = useState([])
   const [streak, setStreak] = useState(0)
@@ -18,6 +25,8 @@ export default function Dashboard() {
   const [prompts] = useState(getPromptsForToday())
 
   const today = format(new Date(), 'yyyy-MM-dd')
+  const currentHour = new Date().getHours()
+  const isMorning = currentHour < 14
 
   useEffect(() => {
     if (user) {
@@ -33,7 +42,7 @@ export default function Dashboard() {
   }, [allEntries])
 
   const fetchTodayEntry = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('entries')
       .select('*')
       .eq('user_id', user.id)
@@ -42,12 +51,17 @@ export default function Dashboard() {
 
     if (data) {
       setTodayEntry(data)
-      setContent(data.content)
+      setContent(data.content || '')
+      setMorningIntention(data.morning_intention || '')
+      setGratitude1(data.gratitude_1 || '')
+      setGratitude2(data.gratitude_2 || '')
+      setGratitude3(data.gratitude_3 || '')
+      setMoodRating(data.mood_rating || 0)
     }
   }
 
   const fetchAllEntries = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('entries')
       .select('*')
       .eq('user_id', user.id)
@@ -59,31 +73,38 @@ export default function Dashboard() {
   }
 
   const handleSave = async () => {
-    if (!content.trim()) return
-
     setLoading(true)
+    setSaved(false)
     try {
+      const entryData = {
+        content,
+        morning_intention: morningIntention,
+        gratitude_1: gratitude1,
+        gratitude_2: gratitude2,
+        gratitude_3: gratitude3,
+        mood_rating: moodRating,
+        updated_at: new Date().toISOString(),
+      }
+
       if (todayEntry) {
-        // Actualizar entrada existente
         const { error } = await supabase
           .from('entries')
-          .update({ content, updated_at: new Date().toISOString() })
+          .update(entryData)
           .eq('id', todayEntry.id)
-
         if (error) throw error
       } else {
-        // Crear nueva entrada
         const { error } = await supabase.from('entries').insert({
           user_id: user.id,
-          content,
           entry_date: today,
+          ...entryData,
         })
-
         if (error) throw error
       }
 
       await fetchTodayEntry()
       await fetchAllEntries()
+      setSaved(true)
+      setTimeout(() => setSaved(false), 3000)
     } catch (error) {
       console.error('Error al guardar:', error)
       alert('Error al guardar. Intenta de nuevo.')
@@ -93,6 +114,7 @@ export default function Dashboard() {
   }
 
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length
+  const hasAnyContent = content.trim() || morningIntention.trim() || gratitude1.trim() || gratitude2.trim() || gratitude3.trim() || moodRating > 0
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -105,26 +127,47 @@ export default function Dashboard() {
           <div className="card flex-1 !p-4">
             <div className="flex items-center gap-2 text-orange-600 dark:text-orange-400">
               <TrendingUp size={20} />
-              <span className="font-semibold">Racha actual</span>
+              <span className="font-semibold">Racha</span>
             </div>
             <p className="text-2xl font-bold mt-1">{streak} días</p>
           </div>
           <div className="card flex-1 !p-4">
             <div className="flex items-center gap-2 text-primary-600 dark:text-primary-400">
               <Calendar size={20} />
-              <span className="font-semibold">Total de entradas</span>
+              <span className="font-semibold">Total</span>
             </div>
             <p className="text-2xl font-bold mt-1">{allEntries.length}</p>
           </div>
         </div>
       </div>
 
-      {/* Área de escritura */}
-      <div className="card">
+      {/* Check-in matutino */}
+      <div className="card mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Sun size={22} className="text-yellow-500" />
+          <h3 className="text-xl font-semibold">Intención del día</h3>
+        </div>
+        <input
+          type="text"
+          value={morningIntention}
+          onChange={(e) => setMorningIntention(e.target.value)}
+          placeholder="¿A qué voy a prestar atención hoy? ¿Qué quiero que sea diferente?"
+          className="input-field"
+        />
+        {isMorning && !morningIntention && !todayEntry?.morning_intention && (
+          <p className="text-sm text-yellow-600 dark:text-yellow-400 mt-2">
+            Establece tu intención para hoy
+          </p>
+        )}
+      </div>
+
+      {/* Homework for Life */}
+      <div className="card mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-semibold">
-            {todayEntry ? 'Tu momento del día' : '¿Qué momento valió la pena hoy?'}
-          </h3>
+          <div className="flex items-center gap-2">
+            <Moon size={22} className="text-indigo-500" />
+            <h3 className="text-xl font-semibold">Momento del día</h3>
+          </div>
           <button
             onClick={() => setShowPrompts(!showPrompts)}
             className="flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:underline"
@@ -137,7 +180,7 @@ export default function Dashboard() {
         {showPrompts && (
           <div className="mb-4 p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg border border-primary-200 dark:border-primary-800">
             <p className="text-sm font-medium text-primary-900 dark:text-primary-100 mb-2">
-              Si no sabes qué escribir, estas preguntas pueden ayudar:
+              Si no sabes qué escribir, prueba con estas preguntas:
             </p>
             <ul className="space-y-1 text-sm text-primary-700 dark:text-primary-300">
               {prompts.map((prompt, idx) => (
@@ -151,24 +194,92 @@ export default function Dashboard() {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Describe el momento más significativo de tu día. No tiene que ser extraordinario, solo algo que te sacó del piloto automático..."
-          className="input-field min-h-[200px] resize-y"
+          className="input-field min-h-[160px] resize-y"
         />
 
-        <div className="flex justify-between items-center mt-4">
+        <div className="flex justify-between items-center mt-3">
           <span className="text-sm text-gray-500">
             {wordCount} {wordCount === 1 ? 'palabra' : 'palabras'}
           </span>
-          <button onClick={handleSave} disabled={loading || !content.trim()} className="btn-primary">
-            {loading ? 'Guardando...' : todayEntry ? 'Actualizar' : 'Guardar'}
-          </button>
         </div>
-
-        {todayEntry && (
-          <p className="text-xs text-gray-500 mt-2">
-            Última actualización: {format(new Date(todayEntry.updated_at), "HH:mm")}
-          </p>
-        )}
       </div>
+
+      {/* Rating del día */}
+      <div className="card mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <h3 className="text-lg font-semibold">¿Cómo fue tu día?</h3>
+        </div>
+        <StarRating
+          rating={moodRating}
+          onRatingChange={setMoodRating}
+          size={32}
+        />
+      </div>
+
+      {/* Gratitud */}
+      <div className="card mb-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Heart size={22} className="text-rose-500" />
+          <h3 className="text-xl font-semibold">Agradecimiento</h3>
+        </div>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          3 cosas por las que estás agradecido hoy
+        </p>
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <span className="text-lg font-bold text-primary-500 w-6">1</span>
+            <input
+              type="text"
+              value={gratitude1}
+              onChange={(e) => setGratitude1(e.target.value)}
+              placeholder="Estoy agradecido por..."
+              className="input-field"
+            />
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-lg font-bold text-primary-500 w-6">2</span>
+            <input
+              type="text"
+              value={gratitude2}
+              onChange={(e) => setGratitude2(e.target.value)}
+              placeholder="Estoy agradecido por..."
+              className="input-field"
+            />
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-lg font-bold text-primary-500 w-6">3</span>
+            <input
+              type="text"
+              value={gratitude3}
+              onChange={(e) => setGratitude3(e.target.value)}
+              placeholder="Estoy agradecido por..."
+              className="input-field"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Botón guardar */}
+      <div className="sticky bottom-4 z-10">
+        <button
+          onClick={handleSave}
+          disabled={loading || !hasAnyContent}
+          className={`w-full py-3 px-6 rounded-xl font-semibold text-white shadow-lg transition-all flex items-center justify-center gap-2 ${
+            saved
+              ? 'bg-green-600'
+              : 'bg-primary-600 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed'
+          }`}
+        >
+          <Save size={20} />
+          {loading ? 'Guardando...' : saved ? '¡Guardado!' : todayEntry ? 'Actualizar todo' : 'Guardar todo'}
+        </button>
+      </div>
+
+      {todayEntry && (
+        <p className="text-xs text-center text-gray-500 mt-2">
+          Última actualización: {format(new Date(todayEntry.updated_at), "HH:mm")}
+        </p>
+      )}
 
       {/* Entradas recientes */}
       {allEntries.length > 1 && (
@@ -179,9 +290,22 @@ export default function Dashboard() {
               if (entry.entry_date === today) return null
               return (
                 <div key={entry.id} className="card !p-4">
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                    {format(new Date(entry.entry_date), "EEEE, d 'de' MMMM", { locale: es })}
-                  </p>
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                      {format(new Date(entry.entry_date), "EEEE, d 'de' MMMM", { locale: es })}
+                    </p>
+                    {entry.mood_rating > 0 && (
+                      <div className="flex gap-0.5">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <Star
+                            key={s}
+                            size={14}
+                            className={s <= entry.mood_rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
                   <p className="text-gray-700 dark:text-gray-300 line-clamp-2">{entry.content}</p>
                 </div>
               )
