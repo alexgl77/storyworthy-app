@@ -75,7 +75,7 @@
 
   /* Hero stoic prompt */
   .text-hero-prompt {
-    @apply font-serif italic text-4xl md:text-5xl lg:text-[3.5rem] leading-tight tracking-tight font-medium;
+    @apply font-serif italic text-2xl md:text-3xl lg:text-4xl leading-tight tracking-tight font-medium;
   }
 
   /* Stoic label with decorative dash */
@@ -107,7 +107,7 @@
 
   /* Life calendar dots */
   .life-dot {
-    @apply w-[3px] h-[3px] rounded-full;
+    @apply w-full aspect-square rounded-full;
   }
 
   .life-dot-past {

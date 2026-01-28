@@ -106,8 +106,8 @@ export default function LifeCalendar() {
           </div>
 
           <div
-            className="grid gap-[2px] max-h-[260px] overflow-y-auto scrollbar-thin py-1"
-            style={{ gridTemplateColumns: 'repeat(52, 3px)' }}
+            className="grid gap-[2px] py-2 w-full"
+            style={{ gridTemplateColumns: 'repeat(52, 1fr)' }}
           >
             {dots}
           </div>

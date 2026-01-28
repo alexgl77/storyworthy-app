@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { format, startOfWeek, addDays } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { supabase } from '../lib/supabase'
@@ -7,8 +7,19 @@ import { getPromptsForToday } from '../utils/prompts'
 import { calculateStreak } from '../utils/stats'
 import StarRating from '../components/StarRating'
 import LifeCalendar from '../components/LifeCalendar'
+import SaveSuccessModal from '../components/SaveSuccessModal'
 import { getDailyQuote } from '../utils/quotes'
 import { Sparkles, Flame, Save } from 'lucide-react'
+
+function getWeeksLived() {
+  const saved = localStorage.getItem('clarity-birth-date')
+  if (!saved) return null
+  const birthDate = new Date(saved)
+  const now = new Date()
+  const diffMs = now - birthDate
+  const diffWeeks = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 7))
+  return Math.max(0, diffWeeks)
+}
 
 export default function Dashboard() {
   const { user } = useAuth()
@@ -20,6 +31,7 @@ export default function Dashboard() {
   const [moodRating, setMoodRating] = useState(0)
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [todayEntry, setTodayEntry] = useState(null)
   const [allEntries, setAllEntries] = useState([])
   const [streak, setStreak] = useState(0)
@@ -30,6 +42,7 @@ export default function Dashboard() {
   const today = format(new Date(), 'yyyy-MM-dd')
   const currentHour = new Date().getHours()
   const isMorning = currentHour < 14
+  const weeksLived = useMemo(() => getWeeksLived(), [])
 
   useEffect(() => {
     if (user) {
@@ -107,6 +120,7 @@ export default function Dashboard() {
       await fetchTodayEntry()
       await fetchAllEntries()
       setSaved(true)
+      setShowSuccessModal(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (error) {
       console.error('Error al guardar:', error)
@@ -131,11 +145,11 @@ export default function Dashboard() {
         <div className="flex-1 min-w-0">
           {/* App hero title */}
           <section className="mb-12 md:mb-16">
-            <p className="label-stoic mb-6">
-              REFLEXIÓN DIARIA CONSCIENTE
+            <p className="font-serif text-lg text-gray-400 dark:text-gray-500 mb-3 tracking-wide">
+              Clarity
             </p>
             <h1 className="text-hero-prompt text-charcoal dark:text-gray-100">
-              Escribe tu <span className="text-gold dark:text-sage-glow italic">historia</span>, un día a la vez.
+              Captura tus <span className="text-gold dark:text-sage-glow italic">momentos</span>, un día a la vez.
             </h1>
             <p className="mt-4 text-sm font-sans text-gray-400 dark:text-gray-500 tracking-wide">
               {format(new Date(), "EEEE d 'de' MMMM", { locale: es })}
@@ -348,6 +362,14 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Success Modal */}
+      <SaveSuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        streak={streak}
+        weeksLived={weeksLived}
+      />
     </div>
   )
 }
