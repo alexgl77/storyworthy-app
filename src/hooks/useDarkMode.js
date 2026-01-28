@@ -7,7 +7,11 @@ export function useDarkMode() {
     if (saved !== null) {
       return saved === 'true'
     }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
+    // Dark por defecto; solo claro si el usuario lo prefiere explícitamente
+    if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+      return false
+    }
+    return true
   })
 
   useEffect(() => {

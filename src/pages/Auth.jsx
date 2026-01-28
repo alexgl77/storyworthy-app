@@ -32,7 +32,7 @@ export default function Auth() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-canvas dark:bg-dark-bg">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-canvas dark:bg-dark-base">
       <div className="max-w-sm w-full">
         {/* Brand */}
         <div className="text-center mb-12">
@@ -47,7 +47,7 @@ export default function Auth() {
         {/* Card */}
         <div className="card-floating">
           {/* Toggle */}
-          <div className="flex gap-1 mb-6 p-1 bg-canvas dark:bg-dark-elevated rounded-2xl">
+          <div className="flex gap-1 mb-6 p-1 bg-canvas dark:bg-dark-raised rounded-2xl">
             <button
               onClick={() => setIsLogin(true)}
               className={`flex-1 py-2 px-4 rounded-xl text-sm font-medium transition-all duration-200 ${
@@ -127,7 +127,7 @@ export default function Auth() {
               {isLogin ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'}{' '}
               <button
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-indigo-500 font-medium hover:underline"
+                className="text-indigo-500 dark:text-sage-400 font-medium hover:underline"
               >
                 {isLogin ? 'Crear una' : 'Inicia sesión'}
               </button>

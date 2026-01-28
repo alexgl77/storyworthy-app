@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -9,9 +9,14 @@
     @apply bg-canvas text-charcoal font-sans antialiased;
   }
 
+  html.dark {
+    background-color: #0A0A12;
+    color-scheme: dark;
+  }
+
   .dark body {
-    background-color: #1A1A2E;
-    color: #FAFAFA;
+    background-color: #0A0A12;
+    color: #E5E5E5;
   }
 }
 
@@ -20,12 +25,16 @@
     @apply bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-6 rounded-2xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-zen hover:shadow-zen-md active:scale-[0.98];
   }
 
+  .dark .btn-primary {
+    @apply bg-sage-500 hover:bg-sage-400;
+  }
+
   .btn-secondary {
     @apply bg-white hover:bg-gray-50 text-charcoal font-medium py-2.5 px-5 rounded-2xl transition-all duration-200 border border-gray-200/60 shadow-zen;
   }
 
   .dark .btn-secondary {
-    @apply bg-dark-surface hover:bg-dark-elevated text-gray-200 border-dark-border;
+    @apply bg-dark-raised border-dark-border text-gray-300 hover:bg-dark-hover;
   }
 
   /* Organic input - feels like writing on quality paper */
@@ -34,7 +43,7 @@
   }
 
   .dark .input-organic {
-    @apply text-gray-100 border-dark-border focus:border-indigo-400 placeholder:text-gray-600;
+    @apply text-gray-200 border-dark-muted focus:border-sage-400 placeholder:text-gray-600;
   }
 
   /* Standard input for forms */
@@ -43,7 +52,7 @@
   }
 
   .dark .input-field {
-    @apply bg-dark-surface border-dark-border text-gray-100 placeholder:text-gray-600;
+    @apply bg-dark-surface border-dark-border text-gray-200 placeholder:text-gray-600 focus:border-sage-400 focus:ring-sage-400/20;
   }
 
   /* Zen card - minimal elevation */
@@ -61,6 +70,69 @@
   }
 
   .dark .card-floating {
-    @apply bg-dark-surface shadow-none border border-dark-border;
+    @apply bg-dark-raised shadow-none border border-dark-border;
   }
+
+  /* Hero stoic prompt */
+  .text-hero-prompt {
+    @apply font-serif italic text-4xl md:text-5xl lg:text-[3.5rem] leading-tight tracking-tight font-medium;
+  }
+
+  /* Stoic label with decorative dash */
+  .label-stoic {
+    @apply text-xs uppercase tracking-[0.25em] font-sans font-medium text-gray-500 flex items-center gap-3;
+  }
+
+  .label-stoic::before {
+    content: '';
+    @apply block w-8 h-px bg-sage-400;
+  }
+
+  /* Quote card */
+  .quote-card {
+    @apply rounded-xl p-5 italic font-serif text-sm leading-relaxed bg-sage-50 text-gray-600 border border-sage-100;
+  }
+
+  .dark .quote-card {
+    @apply bg-dark-raised border-dark-border text-gray-400;
+  }
+
+  /* Life calendar dots */
+  .life-dot {
+    @apply w-[3px] h-[3px] rounded-full;
+  }
+
+  .life-dot-past {
+    @apply bg-gray-300;
+  }
+
+  .dark .life-dot-past {
+    @apply bg-dark-muted opacity-40;
+  }
+
+  .life-dot-future {
+    @apply bg-gray-200;
+  }
+
+  .dark .life-dot-future {
+    @apply bg-dark-muted opacity-15;
+  }
+
+  .life-dot-current {
+    @apply bg-sage-glow animate-pulse-sage;
+  }
+}
+
+/* Dark mode thin scrollbar */
+.dark .scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
 }

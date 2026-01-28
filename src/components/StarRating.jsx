@@ -27,7 +27,7 @@ export default function StarRating({ rating = 0, onRatingChange, size = 28, labe
               className={`transition-colors duration-200 ${
                 star <= (hovered || rating)
                   ? 'fill-amber-400 text-amber-400'
-                  : 'text-gray-200 dark:text-gray-600'
+                  : 'text-gray-200 dark:text-dark-muted'
               }`}
             />
           </button>

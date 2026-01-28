@@ -169,7 +169,7 @@ export default function WeeklyReport() {
   ]
 
   return (
-    <div className="bg-canvas-alt dark:bg-dark-bg min-h-screen -mt-0">
+    <div className="bg-canvas-alt dark:bg-dark-base min-h-screen -mt-0">
       <div className="max-w-5xl mx-auto px-4 md:px-8 py-8 md:py-12">
 
         {/* Week navigation */}
@@ -187,7 +187,7 @@ export default function WeeklyReport() {
               {format(weeklyStats.weekStart, "d 'de' MMMM", { locale: es })} — {format(weeklyStats.weekEnd, "d 'de' MMMM, yyyy", { locale: es })}
             </p>
             {!isCurrentWeek && (
-              <button onClick={goToCurrentWeek} className="text-xs text-indigo-500 hover:underline mt-1">
+              <button onClick={goToCurrentWeek} className="text-xs text-indigo-500 dark:text-sage-400 hover:underline mt-1">
                 Ir a semana actual
               </button>
             )}
@@ -206,7 +206,7 @@ export default function WeeklyReport() {
         {/* Stats grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           {[
-            { label: 'Días', value: `${weeklyStats.daysCompleted}/7`, sub: <div className="mt-2 bg-gray-100 dark:bg-dark-elevated rounded-full h-1.5"><div className="bg-indigo-500 h-1.5 rounded-full transition-all duration-500" style={{ width: `${weeklyStats.completionRate}%` }} /></div> },
+            { label: 'Días', value: `${weeklyStats.daysCompleted}/7`, sub: <div className="mt-2 bg-gray-100 dark:bg-dark-raised rounded-full h-1.5"><div className="bg-indigo-500 h-1.5 rounded-full transition-all duration-500" style={{ width: `${weeklyStats.completionRate}%` }} /></div> },
             { label: 'Palabras', value: weeklyStats.totalWords, sub: <p className="text-xs text-gray-400 mt-1">~{Math.round(weeklyStats.totalWords / Math.max(weeklyStats.daysCompleted, 1))}/día</p> },
             { label: 'Promedio', value: avgMood > 0 ? avgMood : '—', sub: <p className="text-xs text-gray-400 mt-1">{moodEntries.length > 0 ? `${moodEntries.length} días evaluados` : 'Sin evaluación'}</p> },
             { label: 'Racha', value: streak, sub: <p className="text-xs text-gray-400 mt-1">días seguidos</p> },
@@ -235,7 +235,7 @@ export default function WeeklyReport() {
                   className={`text-center py-3 px-2 rounded-2xl transition-all duration-200 ${
                     hasEntry
                       ? 'bg-sage-50 dark:bg-sage-400/10'
-                      : 'bg-canvas dark:bg-dark-elevated'
+                      : 'bg-canvas dark:bg-dark-raised'
                   } ${isToday ? 'ring-2 ring-indigo-400 ring-offset-2 dark:ring-offset-dark-surface' : ''}`}
                 >
                   <p className="text-[10px] font-medium text-gray-400 uppercase">
@@ -335,7 +335,7 @@ export default function WeeklyReport() {
               className={`w-full py-3.5 px-6 rounded-2xl font-medium text-white shadow-zen-lg transition-all duration-200 flex items-center justify-center gap-2 ${
                 reflectionSaved
                   ? 'bg-sage-400'
-                  : 'bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed'
+                  : 'bg-indigo-600 hover:bg-indigo-700 dark:bg-sage-500 dark:hover:bg-sage-400 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed'
               }`}
             >
               <Save size={18} strokeWidth={1.5} />

@@ -5,8 +5,11 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { getPromptsForToday } from '../utils/prompts'
 import { calculateStreak } from '../utils/stats'
+import { getDailyQuote } from '../utils/quotes'
 import StarRating from '../components/StarRating'
-import { Sparkles, Flame, Save, X } from 'lucide-react'
+import HeroPrompt from '../components/HeroPrompt'
+import LifeCalendar from '../components/LifeCalendar'
+import { Sparkles, Flame, Save } from 'lucide-react'
 
 export default function Dashboard() {
   const { user } = useAuth()
@@ -23,15 +26,8 @@ export default function Dashboard() {
   const [streak, setStreak] = useState(0)
   const [showPrompts, setShowPrompts] = useState(false)
   const [prompts] = useState(getPromptsForToday())
-  const [showIntro, setShowIntro] = useState(() => {
-    return localStorage.getItem('clarity_intro_dismissed') !== 'true'
-  })
 
-  const dismissIntro = () => {
-    setShowIntro(false)
-    localStorage.setItem('clarity_intro_dismissed', 'true')
-  }
-
+  const quote = getDailyQuote()
   const today = format(new Date(), 'yyyy-MM-dd')
   const currentHour = new Date().getHours()
   const isMorning = currentHour < 14
@@ -124,42 +120,23 @@ export default function Dashboard() {
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length
   const hasAnyContent = content.trim() || morningIntention.trim() || gratitude1.trim() || gratitude2.trim() || gratitude3.trim() || moodRating > 0
 
-  // Weekly progress: which days of this week have entries
+  // Weekly progress
   const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 })
   const weekDays = Array.from({ length: 7 }, (_, i) => format(addDays(weekStart, i), 'yyyy-MM-dd'))
   const entryDates = new Set(allEntries.map((e) => e.entry_date))
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 md:py-12">
-      {/* Intro dismissible */}
-      {showIntro && (
-        <div className="relative mb-8 p-6 rounded-2xl bg-gradient-to-br from-indigo-50/80 to-canvas dark:from-indigo-900/10 dark:to-dark-surface border border-indigo-100/40 dark:border-indigo-800/20">
-          <button
-            onClick={dismissIntro}
-            className="absolute top-4 right-4 p-1 rounded-lg text-gray-300 hover:text-gray-500 transition-colors"
-            aria-label="Cerrar"
-          >
-            <X size={16} />
-          </button>
-          <h3 className="font-serif text-lg text-charcoal dark:text-gray-100 mb-1">
-            Vive con intención, no en piloto automático.
-          </h3>
-          <p className="text-sm text-gray-400 dark:text-gray-500 leading-relaxed pr-6">
-            Cada día: establece una intención, captura tu momento más significativo, evalúa cómo te fue y agradece. Cada semana: reflexiona sobre tus patrones.
-          </p>
-        </div>
-      )}
-
       <div className="flex gap-12">
         {/* ─── Main content ─── */}
         <div className="flex-1 min-w-0">
-          {/* Date */}
-          <p className="text-sm text-gray-400 dark:text-gray-500 mb-1 uppercase tracking-wider font-medium">
-            {format(new Date(), "EEEE", { locale: es })}
+          {/* Hero Stoic Prompt */}
+          <HeroPrompt />
+
+          {/* Date subtitle */}
+          <p className="text-sm text-gray-400 dark:text-gray-500 mb-10 uppercase tracking-wider font-medium">
+            {format(new Date(), "EEEE d 'de' MMMM", { locale: es })}
           </p>
-          <h1 className="font-serif text-3xl md:text-4xl font-medium text-charcoal dark:text-gray-100 mb-12">
-            {format(new Date(), "d 'de' MMMM", { locale: es })}
-          </h1>
 
           {/* Morning Intention */}
           <section className="mb-10 pb-10 border-b border-gray-100 dark:border-dark-border">
@@ -170,7 +147,7 @@ export default function Dashboard() {
               type="text"
               value={morningIntention}
               onChange={(e) => setMorningIntention(e.target.value)}
-              placeholder="Hoy mi intención es..."
+              placeholder="Enfócate en el presente. Escribe tu intención..."
               className="input-organic text-lg"
             />
             {isMorning && !morningIntention && !todayEntry?.morning_intention && (
@@ -188,7 +165,7 @@ export default function Dashboard() {
               </label>
               <button
                 onClick={() => setShowPrompts(!showPrompts)}
-                className="flex items-center gap-1.5 text-gray-300 hover:text-indigo-500 transition-colors"
+                className="flex items-center gap-1.5 text-gray-300 dark:text-gray-600 hover:text-indigo-500 dark:hover:text-sage-400 transition-colors"
               >
                 <Sparkles size={14} />
                 <span className="text-xs">Ideas</span>
@@ -196,14 +173,14 @@ export default function Dashboard() {
             </div>
 
             {showPrompts && (
-              <div className="mb-4 p-5 rounded-2xl bg-canvas-alt dark:bg-dark-elevated border border-gray-100/60 dark:border-dark-border">
+              <div className="mb-4 p-5 rounded-2xl bg-canvas-alt dark:bg-dark-raised border border-gray-100/60 dark:border-dark-border">
                 <p className="text-xs font-medium text-gray-400 dark:text-gray-500 mb-3 uppercase tracking-wider">
                   Si no sabes qué escribir:
                 </p>
                 <ul className="space-y-1.5 text-sm text-gray-500 dark:text-gray-400">
                   {prompts.map((prompt, idx) => (
                     <li key={idx} className="flex gap-2">
-                      <span className="text-gray-300">·</span>
+                      <span className="text-gray-300 dark:text-gray-600">·</span>
                       {prompt}
                     </li>
                   ))}
@@ -270,7 +247,7 @@ export default function Dashboard() {
               className={`w-full py-3.5 px-6 rounded-2xl font-medium text-white shadow-zen-lg transition-all duration-200 flex items-center justify-center gap-2 ${
                 saved
                   ? 'bg-sage-400'
-                  : 'bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed'
+                  : 'bg-indigo-600 hover:bg-indigo-700 dark:bg-sage-500 dark:hover:bg-sage-400 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed'
               }`}
             >
               <Save size={18} strokeWidth={1.5} />
@@ -286,7 +263,7 @@ export default function Dashboard() {
         </div>
 
         {/* ─── Right sidebar — Insights ─── */}
-        <aside className="hidden lg:block w-56 shrink-0">
+        <aside className="hidden lg:block w-64 shrink-0">
           <div className="sticky top-12 space-y-6">
             {/* Streak */}
             <div className="text-center p-6 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border">
@@ -311,8 +288,8 @@ export default function Dashboard() {
                           hasEntry
                             ? 'bg-sage-400'
                             : isToday
-                            ? 'bg-indigo-100 dark:bg-indigo-900/30 ring-2 ring-indigo-400 ring-offset-1 dark:ring-offset-dark-surface'
-                            : 'bg-gray-100 dark:bg-dark-elevated'
+                            ? 'bg-indigo-100 dark:bg-dark-hover ring-2 ring-indigo-400 dark:ring-sage-400 ring-offset-1 dark:ring-offset-dark-surface'
+                            : 'bg-gray-100 dark:bg-dark-muted'
                         }`}
                       />
                     </div>
@@ -326,6 +303,19 @@ export default function Dashboard() {
               <p className="text-3xl font-serif font-medium text-charcoal dark:text-gray-100">{allEntries.length}</p>
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">entradas totales</p>
             </div>
+
+            {/* Life Calendar */}
+            <div className="p-6 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border">
+              <LifeCalendar />
+            </div>
+
+            {/* Philosophical Quote */}
+            <div className="quote-card">
+              <p className="mb-2">"{quote.text}"</p>
+              <p className="text-xs text-gray-500 not-italic font-sans">
+                — {quote.author}
+              </p>
+            </div>
           </div>
         </aside>
       </div>
@@ -334,11 +324,11 @@ export default function Dashboard() {
       <div className="lg:hidden flex gap-3 mt-8 mb-4">
         <div className="flex-1 text-center p-4 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border">
           <Flame size={18} className="mx-auto mb-1 text-coral-500" strokeWidth={1.5} />
-          <p className="text-xl font-serif font-medium">{streak}</p>
+          <p className="text-xl font-serif font-medium text-charcoal dark:text-gray-100">{streak}</p>
           <p className="text-[10px] text-gray-400">racha</p>
         </div>
         <div className="flex-1 text-center p-4 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border">
-          <p className="text-xl font-serif font-medium">{allEntries.length}</p>
+          <p className="text-xl font-serif font-medium text-charcoal dark:text-gray-100">{allEntries.length}</p>
           <p className="text-[10px] text-gray-400">entradas</p>
         </div>
         <div className="flex-1 p-4 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border">
@@ -348,7 +338,7 @@ export default function Dashboard() {
               <div
                 key={day}
                 className={`w-3 h-3 rounded-full ${
-                  entryDates.has(day) ? 'bg-sage-400' : day === today ? 'ring-1 ring-indigo-400 bg-indigo-50 dark:bg-dark-elevated' : 'bg-gray-100 dark:bg-dark-elevated'
+                  entryDates.has(day) ? 'bg-sage-400' : day === today ? 'ring-1 ring-sage-400 bg-sage-50 dark:bg-dark-hover' : 'bg-gray-100 dark:bg-dark-muted'
                 }`}
               />
             ))}
