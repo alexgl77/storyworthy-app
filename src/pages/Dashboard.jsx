@@ -5,9 +5,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { getPromptsForToday } from '../utils/prompts'
 import { calculateStreak } from '../utils/stats'
-import { getDailyQuote } from '../utils/quotes'
 import StarRating from '../components/StarRating'
-import HeroPrompt from '../components/HeroPrompt'
 import LifeCalendar from '../components/LifeCalendar'
 import { Sparkles, Flame, Save } from 'lucide-react'
 
@@ -27,7 +25,6 @@ export default function Dashboard() {
   const [showPrompts, setShowPrompts] = useState(false)
   const [prompts] = useState(getPromptsForToday())
 
-  const quote = getDailyQuote()
   const today = format(new Date(), 'yyyy-MM-dd')
   const currentHour = new Date().getHours()
   const isMorning = currentHour < 14
@@ -130,13 +127,18 @@ export default function Dashboard() {
       <div className="flex gap-12">
         {/* ─── Main content ─── */}
         <div className="flex-1 min-w-0">
-          {/* Hero Stoic Prompt */}
-          <HeroPrompt />
-
-          {/* Date subtitle */}
-          <p className="text-sm text-gray-400 dark:text-gray-500 mb-10 uppercase tracking-wider font-medium">
-            {format(new Date(), "EEEE d 'de' MMMM", { locale: es })}
-          </p>
+          {/* App hero title */}
+          <section className="mb-12 md:mb-16">
+            <p className="label-stoic mb-6">
+              REFLEXIÓN DIARIA CONSCIENTE
+            </p>
+            <h1 className="text-hero-prompt text-charcoal dark:text-gray-100">
+              Escribe tu <span className="text-gold dark:text-gold-glow">historia</span>, un día a la vez.
+            </h1>
+            <p className="mt-4 text-sm font-sans text-gray-400 dark:text-gray-500 tracking-wide">
+              {format(new Date(), "EEEE d 'de' MMMM", { locale: es })}
+            </p>
+          </section>
 
           {/* Morning Intention */}
           <section className="mb-10 pb-10 border-b border-gray-100 dark:border-dark-border">
@@ -309,13 +311,6 @@ export default function Dashboard() {
               <LifeCalendar />
             </div>
 
-            {/* Philosophical Quote */}
-            <div className="quote-card">
-              <p className="mb-2">"{quote.text}"</p>
-              <p className="text-xs text-gray-500 not-italic font-sans">
-                — {quote.author}
-              </p>
-            </div>
           </div>
         </aside>
       </div>
