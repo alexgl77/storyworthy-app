@@ -26,7 +26,7 @@ export default function Layout({ children }) {
         <div className="flex flex-col items-center gap-1">
           {/* Logo */}
           <Link to="/" className="mb-8">
-            <span className="text-xl font-serif font-bold text-indigo-600 dark:text-sage-400">C</span>
+            <span className="text-xl font-serif font-bold text-indigo-600 dark:text-sage-glow">C</span>
           </Link>
 
           {/* Nav items */}
@@ -39,7 +39,7 @@ export default function Layout({ children }) {
                 to={item.path}
                 className={`flex items-center justify-center w-11 h-11 rounded-2xl transition-all duration-200 group relative ${
                   isActive
-                    ? 'bg-indigo-50 dark:bg-dark-hover text-indigo-600 dark:text-sage-400 dark:drop-shadow-[0_0_6px_rgba(122,184,122,0.5)]'
+                    ? 'bg-indigo-50 dark:bg-sage-glow/10 text-indigo-600 dark:text-sage-glow dark:drop-shadow-[0_0_6px_rgba(209,220,192,0.5)]'
                     : 'text-gray-400 dark:text-gray-600 hover:bg-gray-50 dark:hover:bg-dark-hover hover:text-charcoal dark:hover:text-gray-300'
                 }`}
                 title={item.label}
@@ -77,7 +77,7 @@ export default function Layout({ children }) {
       <div className="flex-1 md:ml-[72px]">
         {/* Mobile header */}
         <header className="md:hidden flex items-center justify-between px-4 h-14 border-b border-gray-100/60 dark:border-dark-border bg-white/80 dark:bg-dark-surface/80 backdrop-blur-lg sticky top-0 z-10">
-          <Link to="/" className="font-serif font-bold text-lg text-indigo-600 dark:text-sage-400">
+          <Link to="/" className="font-serif font-bold text-lg text-indigo-600 dark:text-sage-glow">
             Clarity
           </Link>
           <div className="flex items-center gap-2">
@@ -116,7 +116,7 @@ export default function Layout({ children }) {
                 to={item.path}
                 className={`flex-1 flex flex-col items-center gap-1 py-3 transition-all duration-200 ${
                   isActive
-                    ? 'text-indigo-600 dark:text-sage-400'
+                    ? 'text-indigo-600 dark:text-sage-glow'
                     : 'text-gray-400 dark:text-gray-600'
                 }`}
               >

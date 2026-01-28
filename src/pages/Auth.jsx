@@ -127,7 +127,7 @@ export default function Auth() {
               {isLogin ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'}{' '}
               <button
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-indigo-500 dark:text-sage-400 font-medium hover:underline"
+                className="text-indigo-500 dark:text-sage-glow font-medium hover:underline"
               >
                 {isLogin ? 'Crear una' : 'Inicia sesión'}
               </button>

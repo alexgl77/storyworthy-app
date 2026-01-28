@@ -10,13 +10,13 @@
   }
 
   html.dark {
-    background-color: #0A0A12;
+    background-color: #0F172A;
     color-scheme: dark;
   }
 
   .dark body {
-    background-color: #0A0A12;
-    color: #E5E5E5;
+    background-color: #0F172A;
+    color: #FFFFFF;
   }
 }
 
@@ -26,7 +26,7 @@
   }
 
   .dark .btn-primary {
-    @apply bg-sage-500 hover:bg-sage-400;
+    @apply bg-sage-glow hover:bg-sage-glow/80 text-dark-base;
   }
 
   .btn-secondary {
@@ -43,7 +43,7 @@
   }
 
   .dark .input-organic {
-    @apply text-gray-200 border-dark-muted focus:border-sage-400 placeholder:text-gray-600;
+    @apply text-gray-200 border-dark-muted focus:border-sage-glow placeholder:text-gray-600;
   }
 
   /* Standard input for forms */
@@ -52,7 +52,7 @@
   }
 
   .dark .input-field {
-    @apply bg-dark-surface border-dark-border text-gray-200 placeholder:text-gray-600 focus:border-sage-400 focus:ring-sage-400/20;
+    @apply bg-dark-surface border-dark-border text-gray-200 placeholder:text-gray-600 focus:border-sage-glow focus:ring-sage-glow/20;
   }
 
   /* Zen card - minimal elevation */
@@ -86,6 +86,14 @@
   .label-stoic::before {
     content: '';
     @apply block w-8 h-px bg-sage-400;
+  }
+
+  .dark .label-stoic {
+    @apply text-gray-400;
+  }
+
+  .dark .label-stoic::before {
+    @apply bg-sage-glow;
   }
 
   /* Quote card */

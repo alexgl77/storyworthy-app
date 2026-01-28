@@ -187,7 +187,7 @@ export default function WeeklyReport() {
               {format(weeklyStats.weekStart, "d 'de' MMMM", { locale: es })} — {format(weeklyStats.weekEnd, "d 'de' MMMM, yyyy", { locale: es })}
             </p>
             {!isCurrentWeek && (
-              <button onClick={goToCurrentWeek} className="text-xs text-indigo-500 dark:text-sage-400 hover:underline mt-1">
+              <button onClick={goToCurrentWeek} className="text-xs text-indigo-500 dark:text-sage-glow hover:underline mt-1">
                 Ir a semana actual
               </button>
             )}
@@ -332,10 +332,10 @@ export default function WeeklyReport() {
             <button
               onClick={handleSaveReflection}
               disabled={reflectionSaving || !hasReflectionContent}
-              className={`w-full py-3.5 px-6 rounded-2xl font-medium text-white shadow-zen-lg transition-all duration-200 flex items-center justify-center gap-2 ${
+              className={`w-full py-3.5 px-6 rounded-2xl font-medium shadow-zen-lg transition-all duration-200 flex items-center justify-center gap-2 ${
                 reflectionSaved
-                  ? 'bg-sage-400'
-                  : 'bg-indigo-600 hover:bg-indigo-700 dark:bg-sage-500 dark:hover:bg-sage-400 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed'
+                  ? 'bg-sage-400 text-white dark:bg-sage-glow dark:text-dark-base'
+                  : 'bg-indigo-600 hover:bg-indigo-700 text-white dark:bg-sage-glow dark:hover:bg-sage-glow/80 dark:text-dark-base active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed'
               }`}
             >
               <Save size={18} strokeWidth={1.5} />

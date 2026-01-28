@@ -21,7 +21,7 @@ export default {
           400: '#8A9A5B',
           500: '#7A8A4E',
           600: '#6A7A42',
-          glow: '#7AB87A',
+          glow: '#D1DCC0',
         },
         clay: {
           50: '#FAF6F0',
@@ -53,14 +53,14 @@ export default {
           400: '#FB8C7E',
           500: '#F97066',
         },
-        // Dark mode surfaces — near-black with subtle navy
+        // Dark mode surfaces — Navy Sanctuary
         dark: {
-          base: '#0A0A12',
-          surface: '#0D0D18',
-          raised: '#12121F',
-          border: '#1A1A2A',
-          hover: '#1E1E30',
-          muted: '#2A2A3D',
+          base: '#0F172A',
+          surface: '#131C31',
+          raised: '#1A2332',
+          border: '#1E293B',
+          hover: '#243044',
+          muted: '#334155',
         },
       },
       fontFamily: {
@@ -71,7 +71,7 @@ export default {
         'zen': '0 1px 3px rgba(0,0,0,0.03)',
         'zen-md': '0 4px 12px rgba(0,0,0,0.04)',
         'zen-lg': '0 8px 24px rgba(0,0,0,0.06)',
-        'glow-sage': '0 0 8px 3px rgba(122, 184, 122, 0.5)',
+        'glow-sage': '0 0 8px 3px rgba(209, 220, 192, 0.5)',
         'glow-gold': '0 0 8px 3px rgba(201, 169, 98, 0.4)',
       },
       borderRadius: {
@@ -80,8 +80,8 @@ export default {
       },
       keyframes: {
         'pulse-sage': {
-          '0%, 100%': { boxShadow: '0 0 4px 1px rgba(122, 184, 122, 0.4)' },
-          '50%': { boxShadow: '0 0 8px 3px rgba(122, 184, 122, 0.7)' },
+          '0%, 100%': { boxShadow: '0 0 4px 1px rgba(209, 220, 192, 0.4)' },
+          '50%': { boxShadow: '0 0 8px 3px rgba(209, 220, 192, 0.7)' },
         },
       },
       animation: {

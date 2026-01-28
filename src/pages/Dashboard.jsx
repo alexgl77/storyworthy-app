@@ -7,6 +7,7 @@ import { getPromptsForToday } from '../utils/prompts'
 import { calculateStreak } from '../utils/stats'
 import StarRating from '../components/StarRating'
 import LifeCalendar from '../components/LifeCalendar'
+import { getDailyQuote } from '../utils/quotes'
 import { Sparkles, Flame, Save } from 'lucide-react'
 
 export default function Dashboard() {
@@ -24,6 +25,7 @@ export default function Dashboard() {
   const [streak, setStreak] = useState(0)
   const [showPrompts, setShowPrompts] = useState(false)
   const [prompts] = useState(getPromptsForToday())
+  const dailyQuote = getDailyQuote()
 
   const today = format(new Date(), 'yyyy-MM-dd')
   const currentHour = new Date().getHours()
@@ -133,7 +135,7 @@ export default function Dashboard() {
               REFLEXIÓN DIARIA CONSCIENTE
             </p>
             <h1 className="text-hero-prompt text-charcoal dark:text-gray-100">
-              Escribe tu <span className="text-gold dark:text-gold-glow">historia</span>, un día a la vez.
+              Escribe tu <span className="text-gold dark:text-sage-glow italic">historia</span>, un día a la vez.
             </h1>
             <p className="mt-4 text-sm font-sans text-gray-400 dark:text-gray-500 tracking-wide">
               {format(new Date(), "EEEE d 'de' MMMM", { locale: es })}
@@ -143,7 +145,7 @@ export default function Dashboard() {
           {/* Morning Intention */}
           <section className="mb-10 pb-10 border-b border-gray-100 dark:border-dark-border">
             <label className="block font-serif text-xl text-charcoal dark:text-gray-200 mb-4">
-              Intención del día
+              Intención del día:
             </label>
             <input
               type="text"
@@ -163,11 +165,11 @@ export default function Dashboard() {
           <section className="mb-10 pb-10 border-b border-gray-100 dark:border-dark-border">
             <div className="flex justify-between items-baseline mb-4">
               <label className="font-serif text-xl text-charcoal dark:text-gray-200">
-                Momento del día
+                Momento del día:
               </label>
               <button
                 onClick={() => setShowPrompts(!showPrompts)}
-                className="flex items-center gap-1.5 text-gray-300 dark:text-gray-600 hover:text-indigo-500 dark:hover:text-sage-400 transition-colors"
+                className="flex items-center gap-1.5 text-gray-300 dark:text-gray-600 hover:text-indigo-500 dark:hover:text-sage-glow transition-colors"
               >
                 <Sparkles size={14} />
                 <span className="text-xs">Ideas</span>
@@ -216,7 +218,7 @@ export default function Dashboard() {
           {/* Gratitude */}
           <section className="mb-12">
             <label className="block font-serif text-xl text-charcoal dark:text-gray-200 mb-2">
-              Agradecimiento
+              Agradecimiento:
             </label>
             <p className="text-sm text-gray-400 dark:text-gray-500 mb-6">
               3 cosas por las que estás agradecido hoy
@@ -246,10 +248,10 @@ export default function Dashboard() {
             <button
               onClick={handleSave}
               disabled={loading || !hasAnyContent}
-              className={`w-full py-3.5 px-6 rounded-2xl font-medium text-white shadow-zen-lg transition-all duration-200 flex items-center justify-center gap-2 ${
+              className={`w-full py-3.5 px-6 rounded-2xl font-medium shadow-zen-lg transition-all duration-200 flex items-center justify-center gap-2 ${
                 saved
-                  ? 'bg-sage-400'
-                  : 'bg-indigo-600 hover:bg-indigo-700 dark:bg-sage-500 dark:hover:bg-sage-400 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed'
+                  ? 'bg-sage-400 text-white dark:bg-sage-glow dark:text-dark-base'
+                  : 'bg-indigo-600 hover:bg-indigo-700 text-white dark:bg-sage-glow dark:hover:bg-sage-glow/80 dark:text-dark-base active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed'
               }`}
             >
               <Save size={18} strokeWidth={1.5} />
@@ -288,9 +290,9 @@ export default function Dashboard() {
                       <div
                         className={`w-5 h-5 rounded-full transition-all duration-300 ${
                           hasEntry
-                            ? 'bg-sage-400'
+                            ? 'bg-sage-400 dark:bg-sage-glow'
                             : isToday
-                            ? 'bg-indigo-100 dark:bg-dark-hover ring-2 ring-indigo-400 dark:ring-sage-400 ring-offset-1 dark:ring-offset-dark-surface'
+                            ? 'bg-indigo-100 dark:bg-dark-hover ring-2 ring-indigo-400 dark:ring-sage-glow ring-offset-1 dark:ring-offset-dark-surface'
                             : 'bg-gray-100 dark:bg-dark-muted'
                         }`}
                       />
@@ -309,6 +311,12 @@ export default function Dashboard() {
             {/* Life Calendar */}
             <div className="p-6 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border">
               <LifeCalendar />
+            </div>
+
+            {/* Daily Quote */}
+            <div className="quote-card">
+              <p className="mb-2">"{dailyQuote.text}"</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 not-italic">— {dailyQuote.author}</p>
             </div>
 
           </div>
@@ -333,7 +341,7 @@ export default function Dashboard() {
               <div
                 key={day}
                 className={`w-3 h-3 rounded-full ${
-                  entryDates.has(day) ? 'bg-sage-400' : day === today ? 'ring-1 ring-sage-400 bg-sage-50 dark:bg-dark-hover' : 'bg-gray-100 dark:bg-dark-muted'
+                  entryDates.has(day) ? 'bg-sage-400 dark:bg-sage-glow' : day === today ? 'ring-1 ring-sage-400 dark:ring-sage-glow bg-sage-50 dark:bg-dark-hover' : 'bg-gray-100 dark:bg-dark-muted'
                 }`}
               />
             ))}

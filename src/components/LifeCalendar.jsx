@@ -61,6 +61,7 @@ export default function LifeCalendar() {
 
   return (
     <div className="space-y-4">
+      <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-medium">Memento Mori</p>
       {showInput || !birthDate ? (
         <div className="space-y-3">
           <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
@@ -82,12 +83,12 @@ export default function LifeCalendar() {
       ) : (
         <>
           <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
-            Cada punto representa una semana de tu vida. El punto <span className="font-medium text-sage-400">brillante</span> es el presente.
+            Cada punto representa una semana de tu vida. El punto <span className="font-medium text-sage-400 dark:text-sage-glow">brillante</span> es el presente.
           </p>
 
           <div className="flex items-baseline justify-between">
             <div>
-              <p className="text-2xl font-serif font-bold text-charcoal dark:text-gray-100 tabular-nums">
+              <p className="text-2xl font-serif font-bold text-charcoal dark:text-white tabular-nums">
                 {weeksRemaining.toLocaleString('es-ES')}
               </p>
               <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 font-medium">
@@ -95,7 +96,7 @@ export default function LifeCalendar() {
               </p>
             </div>
             <div className="text-right">
-              <p className="text-lg font-serif font-medium text-charcoal dark:text-gray-100">
+              <p className="text-lg font-serif font-medium text-charcoal dark:text-white">
                 Semana {currentWeekOfYear}
               </p>
               <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 font-medium">
