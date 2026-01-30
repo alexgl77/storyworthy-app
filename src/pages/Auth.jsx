@@ -5,6 +5,8 @@ export default function Auth() {
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [message, setMessage] = useState(null)
@@ -21,7 +23,17 @@ export default function Auth() {
       if (isLogin) {
         await signIn(email, password)
       } else {
-        await signUp(email, password)
+        if (password !== confirmPassword) {
+          setError('Las contraseñas no coinciden')
+          setLoading(false)
+          return
+        }
+        if (!name.trim()) {
+          setError('Por favor ingresa tu nombre')
+          setLoading(false)
+          return
+        }
+        await signUp(email, password, name.trim())
         setMessage('¡Cuenta creada! Revisa tu email para confirmar tu cuenta.')
       }
     } catch (err) {
@@ -71,6 +83,23 @@ export default function Auth() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {!isLogin && (
+              <div>
+                <label htmlFor="name" className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+                  Nombre
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="input-field"
+                  placeholder="¿Cómo te llamamos?"
+                  required={!isLogin}
+                />
+              </div>
+            )}
+
             <div>
               <label htmlFor="email" className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
                 Email
@@ -101,9 +130,27 @@ export default function Auth() {
                 required
               />
               {!isLogin && (
-                <p className="text-xs text-gray-300 mt-2">Mínimo 6 caracteres</p>
+                <p className="text-xs text-gray-300 dark:text-gray-600 mt-2">Mínimo 6 caracteres</p>
               )}
             </div>
+
+            {!isLogin && (
+              <div>
+                <label htmlFor="confirmPassword" className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+                  Confirmar contraseña
+                </label>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="input-field"
+                  placeholder="••••••••"
+                  minLength={6}
+                  required={!isLogin}
+                />
+              </div>
+            )}
 
             {error && (
               <div className="bg-coral-500/8 border border-coral-500/15 text-coral-500 px-4 py-3 rounded-2xl text-sm">

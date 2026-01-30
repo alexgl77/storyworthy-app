@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { getPromptsForToday } from '../utils/prompts'
 import { calculateStreak } from '../utils/stats'
-import StarRating from '../components/StarRating'
+import MoodQuestionnaire from '../components/MoodQuestionnaire'
 import LifeCalendar from '../components/LifeCalendar'
 import SaveSuccessModal from '../components/SaveSuccessModal'
 import { getDailyQuote } from '../utils/quotes'
@@ -222,10 +222,9 @@ export default function Dashboard() {
             <label className="block font-serif text-xl text-charcoal dark:text-gray-200 mb-4">
               ¿Cómo fue tu día?
             </label>
-            <StarRating
+            <MoodQuestionnaire
               rating={moodRating}
               onRatingChange={setMoodRating}
-              size={28}
             />
           </section>
 

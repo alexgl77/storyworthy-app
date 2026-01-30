@@ -110,6 +110,10 @@
     @apply w-full aspect-square rounded-full;
   }
 
+  .life-dot-modal {
+    @apply w-full aspect-square rounded-full min-w-[4px];
+  }
+
   .life-dot-past {
     @apply bg-gray-300;
   }
