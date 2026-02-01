@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { format, startOfWeek, addDays } from 'date-fns'
+import { format, startOfWeek, addDays, subDays } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
@@ -33,6 +33,8 @@ export default function Dashboard() {
   const [saved, setSaved] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [todayEntry, setTodayEntry] = useState(null)
+  const [yesterdayEntry, setYesterdayEntry] = useState(null)
+  const [intentionFulfilled, setIntentionFulfilled] = useState(null)
   const [allEntries, setAllEntries] = useState([])
   const [streak, setStreak] = useState(0)
   const [showPrompts, setShowPrompts] = useState(false)
@@ -44,9 +46,12 @@ export default function Dashboard() {
   const isMorning = currentHour < 14
   const weeksLived = useMemo(() => getWeeksLived(), [])
 
+  const yesterday = format(subDays(new Date(), 1), 'yyyy-MM-dd')
+
   useEffect(() => {
     if (user) {
       fetchTodayEntry()
+      fetchYesterdayEntry()
       fetchAllEntries()
     }
   }, [user])
@@ -73,6 +78,20 @@ export default function Dashboard() {
       setGratitude2(data.gratitude_2 || '')
       setGratitude3(data.gratitude_3 || '')
       setMoodRating(data.mood_rating || 0)
+      setIntentionFulfilled(data.intention_fulfilled || null)
+    }
+  }
+
+  const fetchYesterdayEntry = async () => {
+    const { data } = await supabase
+      .from('entries')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('entry_date', yesterday)
+      .single()
+
+    if (data) {
+      setYesterdayEntry(data)
     }
   }
 
@@ -99,6 +118,7 @@ export default function Dashboard() {
         gratitude_2: gratitude2,
         gratitude_3: gratitude3,
         mood_rating: moodRating,
+        intention_fulfilled: intentionFulfilled,
         updated_at: new Date().toISOString(),
       }
 
@@ -169,8 +189,87 @@ export default function Dashboard() {
               className="input-organic text-lg"
             />
             {isMorning && !morningIntention && !todayEntry?.morning_intention && (
-              <p className="text-xs text-clay-400 mt-3">
+              <p className="text-xs text-gray-400 mt-3">
                 Establece tu intención para hoy
+              </p>
+            )}
+
+            {/* Yesterday's intention follow-up (morning) */}
+            {isMorning && yesterdayEntry?.morning_intention && !yesterdayEntry?.intention_fulfilled && (
+              <div className="mt-6 p-4 rounded-2xl bg-canvas-alt dark:bg-dark-raised border border-gray-100/60 dark:border-dark-border">
+                <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
+                  Tu intención de ayer
+                </p>
+                <p className="text-sm text-charcoal dark:text-gray-200 italic mb-4">
+                  "{yesterdayEntry.morning_intention}"
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                  ¿La cumpliste?
+                </p>
+                <div className="flex gap-2">
+                  {[
+                    { value: 'yes', label: 'Sí', color: 'bg-sage-400 dark:bg-sage-glow text-white dark:text-dark-base' },
+                    { value: 'partial', label: 'Parcial', color: 'bg-amber-400 text-white' },
+                    { value: 'no', label: 'No', color: 'bg-gray-300 dark:bg-dark-muted text-charcoal dark:text-gray-300' },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={async () => {
+                        await supabase
+                          .from('entries')
+                          .update({ intention_fulfilled: option.value })
+                          .eq('id', yesterdayEntry.id)
+                        setYesterdayEntry({ ...yesterdayEntry, intention_fulfilled: option.value })
+                      }}
+                      className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${option.color} hover:opacity-80`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Today's intention follow-up (evening) */}
+            {!isMorning && morningIntention && !intentionFulfilled && (
+              <div className="mt-6 p-4 rounded-2xl bg-canvas-alt dark:bg-dark-raised border border-gray-100/60 dark:border-dark-border">
+                <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
+                  Tu intención de hoy
+                </p>
+                <p className="text-sm text-charcoal dark:text-gray-200 italic mb-4">
+                  "{morningIntention}"
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                  ¿La cumpliste?
+                </p>
+                <div className="flex gap-2">
+                  {[
+                    { value: 'yes', label: 'Sí', color: 'bg-sage-400 dark:bg-sage-glow text-white dark:text-dark-base' },
+                    { value: 'partial', label: 'Parcial', color: 'bg-amber-400 text-white' },
+                    { value: 'no', label: 'No', color: 'bg-gray-300 dark:bg-dark-muted text-charcoal dark:text-gray-300' },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setIntentionFulfilled(option.value)}
+                      className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                        intentionFulfilled === option.value
+                          ? option.color
+                          : 'bg-gray-100 dark:bg-dark-muted text-gray-500 dark:text-gray-400'
+                      } hover:opacity-80`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Show fulfilled status */}
+            {intentionFulfilled && (
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
+                Intención marcada como: {intentionFulfilled === 'yes' ? 'Cumplida' : intentionFulfilled === 'partial' ? 'Parcialmente cumplida' : 'No cumplida'}
               </p>
             )}
           </section>
