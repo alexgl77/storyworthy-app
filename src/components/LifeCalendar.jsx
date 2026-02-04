@@ -146,15 +146,24 @@ export default function LifeCalendar() {
               </div>
             </div>
 
-            <button
-              onClick={() => {
-                setShowInput(true)
-                setInputValue(birthDate.toISOString().split('T')[0])
-              }}
-              className="text-[10px] text-gray-500 hover:text-gray-400 underline-offset-2 hover:underline transition-colors"
-            >
-              Cambiar fecha de nacimiento
-            </button>
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => {
+                  setShowInput(true)
+                  setInputValue(birthDate.toISOString().split('T')[0])
+                }}
+                className="text-[10px] text-gray-500 hover:text-gray-400 underline-offset-2 hover:underline transition-colors"
+              >
+                Cambiar fecha
+              </button>
+              <button
+                onClick={() => setShowModal(true)}
+                className="flex items-center gap-1 text-[10px] text-gray-500 hover:text-gray-400 transition-colors"
+              >
+                <Maximize2 size={12} />
+                Ver todas las semanas
+              </button>
+            </div>
           </div>
 
           {/* Desktop: Dot grid view */}
