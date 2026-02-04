@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { format, startOfWeek, addDays, subDays } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { supabase } from '../lib/supabase'
@@ -7,6 +8,7 @@ import { getPromptsForToday } from '../utils/prompts'
 import { calculateStreak } from '../utils/stats'
 import MoodQuestionnaire from '../components/MoodQuestionnaire'
 import LifeCalendar from '../components/LifeCalendar'
+import InsightsCard from '../components/InsightsCard'
 import SaveSuccessModal from '../components/SaveSuccessModal'
 import { getDailyQuote } from '../utils/quotes'
 import { Sparkles, Flame, Save } from 'lucide-react'
@@ -23,6 +25,7 @@ function getWeeksLived() {
 
 export default function Dashboard() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [content, setContent] = useState('')
   const [morningIntention, setMorningIntention] = useState('')
   const [gratitude1, setGratitude1] = useState('')
@@ -420,6 +423,15 @@ export default function Dashboard() {
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">entradas totales</p>
             </div>
 
+            {/* Insights */}
+            <div className="p-6 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border">
+              <InsightsCard
+                entries={allEntries}
+                streak={streak}
+                onViewMore={() => navigate('/weekly')}
+              />
+            </div>
+
             {/* Life Calendar */}
             <div className="p-6 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border">
               <LifeCalendar />
@@ -459,6 +471,15 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Mobile Insights */}
+      <div className="lg:hidden p-6 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border mb-4">
+        <InsightsCard
+          entries={allEntries}
+          streak={streak}
+          onViewMore={() => navigate('/weekly')}
+        />
       </div>
 
       {/* Mobile Memento Mori */}
