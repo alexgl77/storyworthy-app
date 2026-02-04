@@ -77,13 +77,17 @@ export default function LifeCalendar() {
 
   const dots = useMemo(() => createDots(false), [createDots])
 
+  const percentageLived = ((weeksLived / TOTAL_WEEKS) * 100).toFixed(1)
+  const yearsLived = Math.floor(weeksLived / WEEKS_PER_YEAR)
+  const yearsRemaining = TOTAL_YEARS - yearsLived
+
   return (
     <div className="space-y-4">
       <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-medium">Memento Mori</p>
       {showInput || !birthDate ? (
         <div className="space-y-3">
           <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
-            Cada punto representa una semana de tu vida. Ingresa tu fecha de nacimiento para visualizar tu vida en semanas.
+            Visualiza tu vida y haz que cada semana cuente. Ingresa tu fecha de nacimiento.
           </p>
           <input
             type="date"
@@ -100,38 +104,48 @@ export default function LifeCalendar() {
         </div>
       ) : (
         <>
-          <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
-            Cada punto representa una semana de tu vida. El punto <span className="font-medium text-sage-400 dark:text-sage-glow">brillante</span> es el presente.
-          </p>
-
-          <div className="flex items-baseline justify-between">
-            <div>
-              <p className="text-2xl font-serif font-bold text-charcoal dark:text-white tabular-nums">
-                {weeksRemaining.toLocaleString('es-ES')}
+          {/* Mobile: Visual progress view */}
+          <div className="md:hidden space-y-4">
+            {/* Main stat */}
+            <div className="text-center">
+              <p className="text-4xl font-serif font-bold text-charcoal dark:text-white">
+                {percentageLived}%
               </p>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 font-medium">
-                Semanas restantes
-              </p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">de tu vida</p>
             </div>
-            <div className="text-right">
-              <p className="text-lg font-serif font-medium text-charcoal dark:text-white">
-                Semana {currentWeekOfYear}
-              </p>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 font-medium">
-                Actual
-              </p>
+
+            {/* Progress bar */}
+            <div className="relative h-3 bg-gray-100 dark:bg-dark-border rounded-full overflow-hidden">
+              <div
+                className="absolute inset-y-0 left-0 bg-gradient-to-r from-sage-400 to-sage-500 dark:from-sage-500 dark:to-sage-400 rounded-full transition-all duration-500"
+                style={{ width: `${percentageLived}%` }}
+              />
+              <div
+                className="absolute inset-y-0 w-1 bg-gold dark:bg-sage-glow rounded-full animate-pulse"
+                style={{ left: `calc(${percentageLived}% - 2px)` }}
+              />
             </div>
-          </div>
 
-          <div
-            className="grid gap-[2px] py-2 w-full cursor-pointer group"
-            style={{ gridTemplateColumns: 'repeat(52, 1fr)' }}
-            onClick={() => setShowModal(true)}
-          >
-            {dots}
-          </div>
+            {/* Stats grid */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-gray-50 dark:bg-dark-border/50 rounded-xl p-3 text-center">
+                <p className="text-xl font-serif font-bold text-charcoal dark:text-white">{yearsLived}</p>
+                <p className="text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500">años vividos</p>
+              </div>
+              <div className="bg-gray-50 dark:bg-dark-border/50 rounded-xl p-3 text-center">
+                <p className="text-xl font-serif font-bold text-sage-500 dark:text-sage-glow">{yearsRemaining}</p>
+                <p className="text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500">años restantes</p>
+              </div>
+              <div className="bg-gray-50 dark:bg-dark-border/50 rounded-xl p-3 text-center">
+                <p className="text-xl font-serif font-bold text-charcoal dark:text-white">{weeksLived.toLocaleString('es-ES')}</p>
+                <p className="text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500">semanas vividas</p>
+              </div>
+              <div className="bg-gray-50 dark:bg-dark-border/50 rounded-xl p-3 text-center">
+                <p className="text-xl font-serif font-bold text-charcoal dark:text-white">Sem. {currentWeekOfYear}</p>
+                <p className="text-[10px] uppercase tracking-wider text-gray-400 dark:text-gray-500">del año actual</p>
+              </div>
+            </div>
 
-          <div className="flex items-center justify-between">
             <button
               onClick={() => {
                 setShowInput(true)
@@ -139,15 +153,61 @@ export default function LifeCalendar() {
               }}
               className="text-[10px] text-gray-500 hover:text-gray-400 underline-offset-2 hover:underline transition-colors"
             >
-              Cambiar fecha
+              Cambiar fecha de nacimiento
             </button>
-            <button
+          </div>
+
+          {/* Desktop: Dot grid view */}
+          <div className="hidden md:block">
+            <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed mb-4">
+              Cada punto representa una semana de tu vida. El punto <span className="font-medium text-sage-400 dark:text-sage-glow">brillante</span> es el presente.
+            </p>
+
+            <div className="flex items-baseline justify-between">
+              <div>
+                <p className="text-2xl font-serif font-bold text-charcoal dark:text-white tabular-nums">
+                  {weeksRemaining.toLocaleString('es-ES')}
+                </p>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 font-medium">
+                  Semanas restantes
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-lg font-serif font-medium text-charcoal dark:text-white">
+                  Semana {currentWeekOfYear}
+                </p>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 font-medium">
+                  Actual
+                </p>
+              </div>
+            </div>
+
+            <div
+              className="grid gap-[2px] py-2 w-full cursor-pointer group"
+              style={{ gridTemplateColumns: 'repeat(52, 1fr)' }}
               onClick={() => setShowModal(true)}
-              className="flex items-center gap-1 text-[10px] text-gray-500 hover:text-gray-400 transition-colors"
             >
-              <Maximize2 size={12} />
-              Expandir
-            </button>
+              {dots}
+            </div>
+
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => {
+                  setShowInput(true)
+                  setInputValue(birthDate.toISOString().split('T')[0])
+                }}
+                className="text-[10px] text-gray-500 hover:text-gray-400 underline-offset-2 hover:underline transition-colors"
+              >
+                Cambiar fecha
+              </button>
+              <button
+                onClick={() => setShowModal(true)}
+                className="flex items-center gap-1 text-[10px] text-gray-500 hover:text-gray-400 transition-colors"
+              >
+                <Maximize2 size={12} />
+                Expandir
+              </button>
+            </div>
           </div>
         </>
       )}
