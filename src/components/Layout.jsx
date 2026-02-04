@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useDarkMode } from '../hooks/useDarkMode'
-import { Sun, BarChart3, LogOut, Moon, Home, Lightbulb } from 'lucide-react'
+import { Sun, BarChart3, LogOut, Moon, Home, Lightbulb, Sparkles } from 'lucide-react'
 
 export default function Layout({ children }) {
   const { user, signOut } = useAuth()
@@ -17,6 +17,7 @@ export default function Layout({ children }) {
   const navItems = [
     { path: '/', icon: Home, label: 'Inicio' },
     { path: '/insights', icon: Lightbulb, label: 'Insights' },
+    { path: '/benefits', icon: Sparkles, label: 'Beneficios' },
     { path: '/report', icon: BarChart3, label: 'Reporte' },
   ]
 

@@ -4,6 +4,7 @@ import Layout from './components/Layout'
 import Auth from './pages/Auth'
 import Dashboard from './pages/Dashboard'
 import Insights from './pages/Insights'
+import Benefits from './pages/Benefits'
 import WeeklyReport from './pages/WeeklyReport'
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/insights" element={<Insights />} />
+        <Route path="/benefits" element={<Benefits />} />
         <Route path="/report" element={<WeeklyReport />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

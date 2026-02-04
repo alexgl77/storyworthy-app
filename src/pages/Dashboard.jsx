@@ -472,6 +472,12 @@ export default function Dashboard() {
         onClose={() => setShowSuccessModal(false)}
         streak={streak}
         weeksLived={weeksLived}
+        entryData={{
+          hasGratitude: !!(gratitude1 || gratitude2 || gratitude3),
+          hasContent: !!content,
+          hasIntention: !!morningIntention,
+          hasMood: moodRating > 0
+        }}
       />
     </div>
   )
