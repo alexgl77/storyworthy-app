@@ -85,7 +85,7 @@ export default function LifeCalendar() {
     <div className="space-y-4">
       <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-medium">Memento Mori</p>
       {showInput || !birthDate ? (
-        <div className="space-y-3">
+        <div className="space-y-3 overflow-hidden">
           <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
             Visualiza tu vida y haz que cada semana cuente. Ingresa tu fecha de nacimiento.
           </p>
@@ -93,7 +93,7 @@ export default function LifeCalendar() {
             type="date"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            className="input-field text-sm w-full"
+            className="input-field text-sm w-full max-w-full box-border"
           />
           <button
             onClick={handleSaveBirthDate}
