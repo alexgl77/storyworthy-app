@@ -3,6 +3,7 @@ import { useAuth } from './hooks/useAuth'
 import Layout from './components/Layout'
 import Auth from './pages/Auth'
 import Dashboard from './pages/Dashboard'
+import Insights from './pages/Insights'
 import WeeklyReport from './pages/WeeklyReport'
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/insights" element={<Insights />} />
         <Route path="/report" element={<WeeklyReport />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
