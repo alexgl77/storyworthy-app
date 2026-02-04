@@ -461,6 +461,11 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Mobile Memento Mori */}
+      <div className="lg:hidden p-6 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100/60 dark:border-dark-border mb-4">
+        <LifeCalendar />
+      </div>
+
       {/* Success Modal */}
       <SaveSuccessModal
         isOpen={showSuccessModal}
