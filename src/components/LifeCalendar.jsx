@@ -83,14 +83,17 @@ export default function LifeCalendar() {
 
     try {
       // Save to Supabase using upsert
+      const now = new Date().toISOString()
       const { error } = await supabase
         .from('user_settings')
         .upsert({
           user_id: user.id,
           birth_date: inputValue,
-          updated_at: new Date().toISOString()
+          created_at: now,
+          updated_at: now
         }, {
-          onConflict: 'user_id'
+          onConflict: 'user_id',
+          ignoreDuplicates: false
         })
 
       if (error) throw error
