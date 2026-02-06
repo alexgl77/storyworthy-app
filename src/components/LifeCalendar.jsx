@@ -1,5 +1,7 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { X, Maximize2 } from 'lucide-react'
+import { supabase } from '../lib/supabase'
+import { useAuth } from '../hooks/useAuth'
 
 const TOTAL_YEARS = 80
 const WEEKS_PER_YEAR = 52
@@ -20,7 +22,9 @@ function getCurrentWeekOfYear() {
 }
 
 export default function LifeCalendar() {
+  const { user } = useAuth()
   const [birthDate, setBirthDate] = useState(() => {
+    // Load from localStorage as initial cache
     const saved = localStorage.getItem('clarity-birth-date')
     return saved ? new Date(saved) : null
   })
@@ -28,6 +32,42 @@ export default function LifeCalendar() {
   const [inputValue, setInputValue] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [hoveredWeek, setHoveredWeek] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  // Fetch birth_date from Supabase on mount
+  useEffect(() => {
+    async function fetchBirthDate() {
+      if (!user) {
+        setLoading(false)
+        return
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('user_settings')
+          .select('birth_date')
+          .eq('user_id', user.id)
+          .single()
+
+        if (data?.birth_date) {
+          const date = new Date(data.birth_date)
+          setBirthDate(date)
+          setShowInput(false)
+          // Update localStorage cache
+          localStorage.setItem('clarity-birth-date', date.toISOString())
+        } else if (!birthDate) {
+          setShowInput(true)
+        }
+      } catch (err) {
+        // If no settings exist yet, that's ok
+        console.log('No birth date found in settings')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchBirthDate()
+  }, [user])
 
   const weeksLived = useMemo(
     () => (birthDate ? getWeeksLived(birthDate) : 0),
@@ -36,14 +76,34 @@ export default function LifeCalendar() {
   const weeksRemaining = TOTAL_WEEKS - weeksLived
   const currentWeekOfYear = getCurrentWeekOfYear()
 
-  const handleSaveBirthDate = useCallback(() => {
-    if (!inputValue) return
+  const handleSaveBirthDate = useCallback(async () => {
+    if (!inputValue || !user) return
     const date = new Date(inputValue)
     if (isNaN(date.getTime())) return
-    localStorage.setItem('clarity-birth-date', date.toISOString())
-    setBirthDate(date)
-    setShowInput(false)
-  }, [inputValue])
+
+    try {
+      // Save to Supabase using upsert
+      const { error } = await supabase
+        .from('user_settings')
+        .upsert({
+          user_id: user.id,
+          birth_date: inputValue,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
+        })
+
+      if (error) throw error
+
+      // Update localStorage cache
+      localStorage.setItem('clarity-birth-date', date.toISOString())
+      setBirthDate(date)
+      setShowInput(false)
+    } catch (err) {
+      console.error('Error saving birth date:', err)
+      alert('Error al guardar. Intenta de nuevo.')
+    }
+  }, [inputValue, user])
 
   const getWeekInfo = useCallback((weekIndex) => {
     const year = Math.floor(weekIndex / WEEKS_PER_YEAR) + 1
@@ -84,7 +144,11 @@ export default function LifeCalendar() {
   return (
     <div className="space-y-4">
       <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-medium">Memento Mori</p>
-      {showInput || !birthDate ? (
+      {loading ? (
+        <div className="flex items-center justify-center py-4">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-sage-400"></div>
+        </div>
+      ) : showInput || !birthDate ? (
         <div className="space-y-3 overflow-hidden">
           <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
             Visualiza tu vida y haz que cada semana cuente. Ingresa tu fecha de nacimiento.
