@@ -4,10 +4,10 @@ import { X, ChevronRight, ChevronLeft, Target, Sparkles, Heart, BarChart3, Zap }
 const ONBOARDING_STEPS = [
   {
     icon: Sparkles,
-    title: '¡Bienvenido a Clarity!',
-    subtitle: '21 días para salir del piloto automático',
+    title: '¡Bienvenido a Clarity 21!',
+    subtitle: 'Tu reto de 21 días comienza ahora',
     description: 'En solo 7 minutos al día, capturarás momentos significativos, practicarás gratitud y ganarás claridad sobre tu vida.',
-    highlight: 'El 95% de tus días se vuelven indistinguibles sin registro. Cambiemos eso.',
+    highlight: 'Al día 7, 14 y 21 recibirás reportes con tus patrones y progreso.',
     color: 'gold'
   },
   {

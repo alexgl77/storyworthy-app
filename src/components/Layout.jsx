@@ -28,7 +28,7 @@ export default function Layout({ children }) {
         <div className="flex flex-col items-center gap-1">
           {/* Logo */}
           <Link to="/" className="mb-8">
-            <span className="text-xl font-serif font-bold text-indigo-600 dark:text-sage-glow">C</span>
+            <span className="text-xl font-serif font-bold text-indigo-600 dark:text-sage-glow">C<span className="text-gold dark:text-gold text-sm">21</span></span>
           </Link>
 
           {/* Nav items */}
@@ -80,7 +80,7 @@ export default function Layout({ children }) {
         {/* Mobile header */}
         <header className="md:hidden flex items-center justify-between px-4 h-14 border-b border-gray-100/60 dark:border-dark-border bg-white/80 dark:bg-dark-surface/80 backdrop-blur-lg sticky top-0 z-10">
           <Link to="/" className="font-serif font-bold text-lg text-indigo-600 dark:text-sage-glow">
-            Clarity
+            Clarity <span className="text-gold">21</span>
           </Link>
           <div className="flex items-center gap-2">
             <button

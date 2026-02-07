@@ -49,10 +49,13 @@ export default function Auth() {
         {/* Brand */}
         <div className="text-center mb-12">
           <h1 className="font-serif text-5xl font-medium text-charcoal dark:text-gray-100 mb-3">
-            Clarity
+            Clarity <span className="text-gold">21</span>
           </h1>
           <p className="text-gray-400 dark:text-gray-500">
-            Sal del piloto automático. Vive conscientemente.
+            21 días para salir del piloto automático
+          </p>
+          <p className="text-xs text-gray-300 dark:text-gray-600 mt-2">
+            7 minutos al día que cambiarán tu perspectiva
           </p>
         </div>
 
@@ -183,7 +186,7 @@ export default function Auth() {
         </div>
 
         <p className="mt-8 text-center text-[11px] text-gray-300 dark:text-gray-600">
-          Inspirado en el concepto Homework for Life
+          Basado en Homework for Life de Matthew Dicks
         </p>
       </div>
     </div>

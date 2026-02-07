@@ -188,7 +188,7 @@ export default function Dashboard() {
             <div className="flex items-start justify-between">
               <div>
                 <p className="font-serif text-lg text-gray-400 dark:text-gray-500 mb-3 tracking-wide">
-                  Clarity
+                  Clarity <span className="text-gold dark:text-sage-glow">21</span>
                 </p>
                 <h1 className="text-hero-prompt text-charcoal dark:text-gray-100">
                   {quickMode ? (
