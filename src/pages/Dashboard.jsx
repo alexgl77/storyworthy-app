@@ -9,7 +9,7 @@ import MoodQuestionnaire from '../components/MoodQuestionnaire'
 import LifeCalendar from '../components/LifeCalendar'
 import SaveSuccessModal from '../components/SaveSuccessModal'
 import { getDailyQuote } from '../utils/quotes'
-import { Sparkles, Flame, Save } from 'lucide-react'
+import { Sparkles, Flame, Save, Zap, Clock } from 'lucide-react'
 
 function getWeeksLived() {
   const saved = localStorage.getItem('clarity-birth-date')
@@ -39,7 +39,16 @@ export default function Dashboard() {
   const [streak, setStreak] = useState(0)
   const [showPrompts, setShowPrompts] = useState(false)
   const [prompts] = useState(getPromptsForToday())
+  const [quickMode, setQuickMode] = useState(() => {
+    return localStorage.getItem('clarity-quick-mode') === 'true'
+  })
   const dailyQuote = getDailyQuote()
+
+  const toggleQuickMode = () => {
+    const newValue = !quickMode
+    setQuickMode(newValue)
+    localStorage.setItem('clarity-quick-mode', newValue.toString())
+  }
 
   const today = format(new Date(), 'yyyy-MM-dd')
   const currentHour = new Date().getHours()
@@ -151,7 +160,9 @@ export default function Dashboard() {
   }
 
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length
-  const hasAnyContent = content.trim() || morningIntention.trim() || gratitude1.trim() || gratitude2.trim() || gratitude3.trim() || moodRating > 0
+  const hasAnyContent = quickMode
+    ? content.trim()
+    : content.trim() || morningIntention.trim() || gratitude1.trim() || gratitude2.trim() || gratitude3.trim() || moodRating > 0
 
   // Weekly progress
   const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 })
@@ -165,18 +176,50 @@ export default function Dashboard() {
         <div className="flex-1 min-w-0">
           {/* App hero title */}
           <section className="mb-12 md:mb-16">
-            <p className="font-serif text-lg text-gray-400 dark:text-gray-500 mb-3 tracking-wide">
-              Clarity
-            </p>
-            <h1 className="text-hero-prompt text-charcoal dark:text-gray-100">
-              Captura tus <span className="text-gold dark:text-sage-glow italic">momentos</span>, un día a la vez.
-            </h1>
-            <p className="mt-4 text-sm font-sans text-gray-400 dark:text-gray-500 tracking-wide">
-              {format(new Date(), "EEEE d 'de' MMMM", { locale: es })}
-            </p>
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="font-serif text-lg text-gray-400 dark:text-gray-500 mb-3 tracking-wide">
+                  Clarity
+                </p>
+                <h1 className="text-hero-prompt text-charcoal dark:text-gray-100">
+                  {quickMode ? (
+                    <>Tu <span className="text-gold dark:text-sage-glow italic">momento</span> del día</>
+                  ) : (
+                    <>Captura tus <span className="text-gold dark:text-sage-glow italic">momentos</span>, un día a la vez.</>
+                  )}
+                </h1>
+                <p className="mt-4 text-sm font-sans text-gray-400 dark:text-gray-500 tracking-wide">
+                  {format(new Date(), "EEEE d 'de' MMMM", { locale: es })}
+                </p>
+              </div>
+
+              {/* Quick Mode Toggle */}
+              <button
+                onClick={toggleQuickMode}
+                className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                  quickMode
+                    ? 'bg-gold/10 text-gold border border-gold/30'
+                    : 'bg-gray-100 dark:bg-dark-muted text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-dark-hover'
+                }`}
+                title={quickMode ? 'Cambiar a modo completo' : 'Cambiar a modo rápido (1 min)'}
+              >
+                {quickMode ? (
+                  <>
+                    <Zap size={14} className="fill-current" />
+                    <span className="hidden sm:inline">1 min</span>
+                  </>
+                ) : (
+                  <>
+                    <Clock size={14} />
+                    <span className="hidden sm:inline">Completo</span>
+                  </>
+                )}
+              </button>
+            </div>
           </section>
 
           {/* Morning Intention */}
+          {!quickMode && (
           <section className="mb-10 pb-10 border-b border-gray-100 dark:border-dark-border">
             <label className="block font-serif text-xl text-charcoal dark:text-gray-200 mb-4">
               Intención del día:
@@ -273,6 +316,7 @@ export default function Dashboard() {
               </p>
             )}
           </section>
+          )}
 
           {/* Moment of the Day */}
           <section className="mb-10 pb-10 border-b border-gray-100 dark:border-dark-border">
@@ -317,6 +361,7 @@ export default function Dashboard() {
           </section>
 
           {/* How was your day */}
+          {!quickMode && (
           <section className="mb-10 pb-10 border-b border-gray-100 dark:border-dark-border">
             <label className="block font-serif text-xl text-charcoal dark:text-gray-200 mb-4">
               ¿Cómo fue tu día?
@@ -326,8 +371,10 @@ export default function Dashboard() {
               onRatingChange={setMoodRating}
             />
           </section>
+          )}
 
           {/* Gratitude */}
+          {!quickMode && (
           <section className="mb-12">
             <label className="block font-serif text-xl text-charcoal dark:text-gray-200 mb-2">
               Agradecimiento:
@@ -354,6 +401,7 @@ export default function Dashboard() {
               ))}
             </div>
           </section>
+          )}
 
           {/* Save button */}
           <div className="sticky bottom-20 md:bottom-8 z-10">
