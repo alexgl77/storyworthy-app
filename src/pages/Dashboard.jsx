@@ -8,6 +8,7 @@ import { calculateStreak } from '../utils/stats'
 import MoodQuestionnaire from '../components/MoodQuestionnaire'
 import LifeCalendar from '../components/LifeCalendar'
 import SaveSuccessModal from '../components/SaveSuccessModal'
+import Onboarding from '../components/Onboarding'
 import { getDailyQuote } from '../utils/quotes'
 import { Sparkles, Flame, Save, Zap, Clock } from 'lucide-react'
 
@@ -42,7 +43,15 @@ export default function Dashboard() {
   const [quickMode, setQuickMode] = useState(() => {
     return localStorage.getItem('clarity-quick-mode') === 'true'
   })
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    return !localStorage.getItem('clarity-onboarding-completed')
+  })
   const dailyQuote = getDailyQuote()
+
+  const handleOnboardingComplete = () => {
+    localStorage.setItem('clarity-onboarding-completed', 'true')
+    setShowOnboarding(false)
+  }
 
   const toggleQuickMode = () => {
     const newValue = !quickMode
@@ -527,6 +536,11 @@ export default function Dashboard() {
           hasMood: moodRating > 0
         }}
       />
+
+      {/* Onboarding */}
+      {showOnboarding && (
+        <Onboarding onComplete={handleOnboardingComplete} />
+      )}
     </div>
   )
 }
