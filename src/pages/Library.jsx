@@ -3,7 +3,7 @@ import { format, parseISO } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
-import { Search, Calendar, Star, ChevronDown, ChevronUp, BookOpen } from 'lucide-react'
+import { Search, Calendar, Star, ChevronDown, ChevronUp, BookOpen, Download } from 'lucide-react'
 
 export default function Library() {
   const { user } = useAuth()
@@ -87,6 +87,60 @@ export default function Library() {
     setExpandedEntry(expandedEntry === id ? null : id)
   }
 
+  const handleExport = () => {
+    const entriesToExport = filteredEntries.length > 0 ? filteredEntries : entries
+
+    let content = `CLARITY - MIS MOMENTOS\n`
+    content += `Exportado el ${format(new Date(), "d 'de' MMMM yyyy, HH:mm", { locale: es })}\n`
+    content += `Total: ${entriesToExport.length} entradas\n`
+    content += `${'='.repeat(50)}\n\n`
+
+    entriesToExport.forEach(entry => {
+      const date = format(parseISO(entry.entry_date), "EEEE d 'de' MMMM yyyy", { locale: es })
+      content += `📅 ${date.toUpperCase()}\n`
+      content += `${'-'.repeat(40)}\n`
+
+      if (entry.morning_intention) {
+        content += `🎯 Intención: ${entry.morning_intention}\n`
+        if (entry.intention_fulfilled) {
+          const status = entry.intention_fulfilled === 'yes' ? 'Cumplida ✓' :
+                        entry.intention_fulfilled === 'partial' ? 'Parcial ~' : 'No cumplida ✗'
+          content += `   Estado: ${status}\n`
+        }
+      }
+
+      if (entry.content) {
+        content += `\n✨ Momento del día:\n${entry.content}\n`
+      }
+
+      if (entry.gratitude_1 || entry.gratitude_2 || entry.gratitude_3) {
+        content += `\n🙏 Agradecimientos:\n`
+        if (entry.gratitude_1) content += `   • ${entry.gratitude_1}\n`
+        if (entry.gratitude_2) content += `   • ${entry.gratitude_2}\n`
+        if (entry.gratitude_3) content += `   • ${entry.gratitude_3}\n`
+      }
+
+      if (entry.mood_rating > 0) {
+        content += `\n⭐ Día: ${'★'.repeat(entry.mood_rating)}${'☆'.repeat(5 - entry.mood_rating)} (${entry.mood_rating}/5)\n`
+      }
+
+      content += `\n${'='.repeat(50)}\n\n`
+    })
+
+    content += `\n---\nGenerado con Clarity - Tu diario de momentos\n`
+
+    // Create and download file
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `clarity-momentos-${format(new Date(), 'yyyy-MM-dd')}.txt`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
@@ -99,18 +153,33 @@ export default function Library() {
     <div className="max-w-3xl mx-auto px-4 py-8 md:py-12">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 mb-2">
-          <BookOpen size={20} className="text-sage-500" />
-          <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-medium">
-            Tu colección
-          </p>
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <BookOpen size={20} className="text-sage-500" />
+              <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] font-medium">
+                Tu colección
+              </p>
+            </div>
+            <h1 className="font-serif text-3xl text-charcoal dark:text-gray-100 mb-2">
+              Biblioteca
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400">
+              {entries.length} {entries.length === 1 ? 'momento capturado' : 'momentos capturados'}
+            </p>
+          </div>
+
+          {/* Export button */}
+          {entries.length > 0 && (
+            <button
+              onClick={handleExport}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-hover transition-colors text-sm"
+            >
+              <Download size={16} />
+              <span className="hidden sm:inline">Exportar</span>
+            </button>
+          )}
         </div>
-        <h1 className="font-serif text-3xl text-charcoal dark:text-gray-100 mb-2">
-          Biblioteca
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400">
-          {entries.length} {entries.length === 1 ? 'momento capturado' : 'momentos capturados'}
-        </p>
       </div>
 
       {/* Search and Filters */}
