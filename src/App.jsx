@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard'
 import Insights from './pages/Insights'
 import Benefits from './pages/Benefits'
 import WeeklyReport from './pages/WeeklyReport'
+import Library from './pages/Library'
 
 function App() {
   const { user, loading } = useAuth()
@@ -29,6 +30,7 @@ function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/library" element={<Library />} />
         <Route path="/insights" element={<Insights />} />
         <Route path="/benefits" element={<Benefits />} />
         <Route path="/report" element={<WeeklyReport />} />
